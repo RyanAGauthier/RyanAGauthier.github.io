@@ -1,0 +1,164 @@
+	
+UNOFFICIAL STUDENT ACADEMIC RECORD
+
+California State University, Fullerton
+
+Student Name:    Gauthier, Ryan Andrew
+Student Number:  888993417
+DATE PRINTED:    11/06/2020
+------------------------------------------------------------------------------------
+
+                  Audited
+
+
+Unofficial Undergraduate Academic Record
+
+Degree Awarded:
+  Bachelor of Science
+  Honors: Cum Laude
+  Major:  Mechanical Engineering
+  Minor:  Computer Science
+  Degree Conferred:  05/22/2020
+
+
+Higher Education Institutions
+Fullerton Coll *
+
+
+Fall Semester  2017                        (Junior)
+
+Transfer Credit         Accepted  GPA-Units  Grade-Points
+  Fullerton Coll *
+    Transfer Coursework    58.0     58.0       178.0
+  Advanced Placement
+    Economics: Macroecon    3.0
+    English Language & C    3.0
+    Government & Politic    3.0
+    Mathematics: Calculu    4.0
+    US History              6.0
+
+  Term Transfer Total      77.0     58.0       178.0
+
+Admitted To:
+  Bachelor of Science
+  Major: Mechanical Engineering
+
+Dept/No   Course Title                Unts   GR    GP     Footnotes
+CPSC 131  Data Structures              3.0   B     9.0    E,01/26/18
+                   Previous Grade            C
+EGME 304  Thermodynamics               3.0   A+   12.0
+MATH 250A Calculus III                 4.0   B-   10.8
+PHIL 320  Contemporary Moral Issues    3.0   A-   11.1
+   Enrollment Dates: Aug 19, 2017 to Dec 08, 2017
+
+       Enrolled  Earned  GPA-Units  GRD-PT  Acad-GPA  GPA
+Term      13.00   13.00      13.00   42.90    3.07   3.30
+CSUF      13.00   13.00      13.00   42.90    3.07   3.30
+Total     90.00   90.00      71.00  220.90    3.07   3.11
+
+
+Spring Semester  2018                      (Senior)
+Dept/No   Course Title                Unts   GR    GP     Footnotes
+EGCE 302  Dynamics                     3.0   B+    9.9
+EGEE 203  Electric Circuits            3.0   A+   12.0
+EGEE 203L Electric Circuits Lab        1.0   A     4.0
+EGME 331  Mech Behavior Materials      3.0   A    12.0
+MATH 250B Intro Lin Alg & Dif Equa     4.0   B    12.0
+   Enrollment Dates: Jan 20, 2018 to May 11, 2018
+
+       Enrolled  Earned  GPA-Units  GRD-PT  Acad-GPA  GPA
+Term      14.00   14.00      14.00   49.90    3.56   3.56
+CSUF      27.00   27.00      27.00   92.80    3.44   3.44
+Total    104.00  104.00      85.00  270.80    3.19   3.19
+
+Honor/Award: Dean's List
+
+
+Fall Semester  2018                        (Senior)
+Dept/No   Course Title                Unts   GR    GP     Footnotes
+EGME 306A Unified Laboratory           1.0   A+    4.0
+EGME 308  Eng Analysis                 3.0   A    12.0
+EGME 322L Intro Comp Aided Design      3.0   A    12.0
+EGME 333  Fluid Mechanics              3.0   A    12.0    #
+EGME 335  Kinematics of Mechanisms     3.0   A    12.0
+HIST 110B World Civ Since the 16c      3.0   A+   12.0
+   # Designates High Impact Practice Class
+   Enrollment Dates: Aug 25, 2018 to Dec 14, 2018
+
+       Enrolled  Earned  GPA-Units  GRD-PT  Acad-GPA  GPA
+Term      16.00   16.00      16.00   64.00    4.00   4.00
+CSUF      43.00   43.00      43.00  156.80    3.65   3.65
+Total    120.00  120.00     101.00  334.80    3.31   3.32
+
+Honor/Award: Dean's List
+
+
+Spring Semester  2019                      (Senior)
+Changed To:
+  Major: Mechanical Engineering
+  Minor: Computer Science
+
+Dept/No   Course Title                Unts   GR    GP     Footnotes
+EGME 306B Fluids & Thermal Laborato    1.0   A     4.0
+EGME 407  Heat Transfer                3.0   A+   12.0
+EGME 411  Mech Control Systems         3.0   A+   12.0
+EGME 421  Mechanical Design            3.0   A    12.0
+EGME 431  Mechanical Vibrations        3.0   A    12.0
+POSC 300  Contem Issue CA Govt & Po    3.0   A    12.0
+   Enrollment Dates: Jan 19, 2019 to May 10, 2019
+
+       Enrolled  Earned  GPA-Units  GRD-PT  Acad-GPA  GPA
+Term      16.00   16.00      16.00   64.00    4.00   4.00
+CSUF      59.00   59.00      59.00  220.80    3.74   3.74
+Total    136.00  136.00     117.00  398.80    3.41   3.41
+
+Honor/Award: Dean's List
+
+
+Fall Semester  2019                        (Senior)
+Dept/No   Course Title                Unts   GR    GP     Footnotes
+CPSC 332  File Structure & Database    3.0   A-   11.1
+EGME 401  Egr Economics & Profnism     3.0   A    12.0
+EGME 414  Design Project - I           3.0   A-   11.1
+EGME 456  Intro to Mechatronics        3.0   A    12.0
+EGME 476A Dynamic Sys & Contrls Lab    2.0   A+    8.0
+   Enrollment Dates: Aug 24, 2019 to Dec 13, 2019
+
+       Enrolled  Earned  GPA-Units  GRD-PT  Acad-GPA  GPA
+Term      14.00   14.00      14.00   54.20    3.87   3.87
+CSUF      73.00   73.00      73.00  275.00    3.77   3.77
+Total    150.00  150.00     131.00  453.00    3.46   3.46
+
+Honor/Award: Dean's List
+
+
+***Due to the COVID-19 pandemic, all courses for Spring
+2020 were moved to online modality on March 16, 2020***
+
+Spring Semester  2020                      (Senior)
+Dept/No   Course Title                Unts   GR    GP     Footnotes
+CPSC 386  Intro to Game Design         3.0   A+   12.0
+CPSC 449  Web Back-End Engineering     3.0   A    12.0
+EGME 419  Design Project - II          2.0   A     8.0
+EGME 430  Intro to Continuum Mechan    3.0   A+   12.0
+EGME 438  Analytical Methods In Eng    3.0   A+   12.0
+EGME 476B Energy & Power Laboratory    2.0   A+    8.0
+   Enrollment Dates: Jan 18, 2020 to May 08, 2020
+
+       Enrolled  Earned  GPA-Units  GRD-PT  Acad-GPA  GPA
+Term      16.00   16.00      16.00   64.00    4.00   4.00
+CSUF      89.00   89.00      89.00  339.00    3.81   3.81
+Total    166.00  166.00     147.00  517.00    3.52   3.52
+
+Honor/Award: Dean's List
+
+
+Undergraduate Statistics
+
+       Enrolled  Earned  GPA-Units  GRD-PT  Acad-GPA  GPA
+CSUF      89.00   89.00      89.00  339.00    3.81   3.81
+Transfer  77.00   77.00      58.00  178.00           3.07
+Total    166.00  166.00     147.00  517.00    3.52   3.52
+
+Repeat info on Titan Online via Withdrawals/Repeats link
+--------------  End of Undergraduate Record  --------------
