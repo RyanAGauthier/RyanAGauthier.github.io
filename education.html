@@ -10,7 +10,17 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
-        <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+			.myImage{
+				display: none;
+			}
+			span:hover + .myImage{
+				position: absolute;
+				display: block;
+				border:none;
+			}
+		</style>
 	</head>
 	<body class="is-preload">
 
@@ -45,7 +55,7 @@
 						<header>
 							<div class="inner">
 								<h2>Educational History</h2>
-								<p>Here's what I covered in my time at Fullerton College and California State University, Fullerton</p>
+								<p>Presented in reverse chronological order, here's what I covered in my time at Fullerton College and California State University, Fullerton</p>
 							</div>
 						</header>
 
@@ -53,14 +63,52 @@
 							<div class="wrapper">
 								<div class="inner">
 
-									<h3 class="major">Fullerton College</h3>
-									<p>Morbi mattis mi consectetur tortor elementum, varius pellentesque velit convallis. Aenean tincidunt lectus auctor mauris maximus, ac scelerisque ipsum tempor. Duis vulputate ex et ex tincidunt, quis lacinia velit aliquet. Duis non efficitur nisi, id malesuada justo. Maecenas sagittis felis ac sagittis semper. Curabitur purus leo donec vel dolor at arcu tincidunt bibendum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce ut aliquet justo. Donec id neque ipsum. Integer eget ultricies odio. Nam vel ex a orci fringilla tincidunt. Aliquam eleifend ligula non velit accumsan cursus. Etiam ut gravida sapien.</p>
-
-									<p>Vestibulum ultrices risus velit, sit amet blandit massa auctor sit amet. Sed eu lectus sem. Phasellus in odio at ipsum porttitor mollis id vel diam. Praesent sit amet posuere risus, eu faucibus lectus. Vivamus ex ligula, tempus pulvinar ipsum in, auctor porta quam. Proin nec commodo, vel scelerisque nisi scelerisque. Suspendisse id quam vel tortor tincidunt suscipit. Nullam auctor orci eu dolor consectetur, interdum ullamcorper ante tincidunt. Mauris felis nec felis elementum varius.</p>
-
-									<h3 class="major">CSUF</h3>
-                                    <p>I really improved my GPA when I got to CSUF.</p>
-                                    <a class="button primary fit" onclick="displayTranscript()">Transcripts!</a>
+									<h3 class="major">California State University, Fullerton</h3>
+                                    <p>The place I've spent much of my time the past three years, I recently graduated from here with a Bachelors of Science, Mechanical Engineering and a Minor in Computer Science.
+										I greatly enjoyed both my time in Titan Rover and my elective courses (special thanks to Dr. Darren Banks, Dr. Hope Weiss, and Dr. John Sanders).<br>Following are a list of courses I've taken while at CSUF, with my unofficial transcripts following thereafter. Through the magic of CSS, the most notable courses, denoted by an asterisk(*), will display the catalog description when hovered over.</p>
+                                
+                                    <div class="row">
+                                        <div class="col-6 col-12-medium">
+                                            <h4>Relevant Courses Taken</h4>
+                                            <ul>
+                                                <li>EGME 304  Thermodynamics</li>
+                                                <li>MATH 250A Calculus III</li>
+                                                <li>EGCE 302  Dynamics</li>
+                                                <li>EGEE 203  Electric Circuits</li>
+                                                <li>EGEE 203L Electric Circuits Lab</li>
+                                                <li>EGME 331  Mech Behavior Materials</li>
+                                                <li>MATH 250B Intro Lin Alg & Dif Equations</li>
+                                                <li><span>EGME 306A Unified Laboratory*</span><a class ="myImage"><img src="images/under_construction.png"/></a></li>
+                                                <li>EGME 308  Eng Analysis</li>
+												<li>EGME 322L Intro Comp Aided Design</li>
+												<li>EGME 333  Fluid Mechanics</li>
+												<li>EGME 335  Kinematics of Mechanisms</li> 
+												<li><span>EGME 306B Fluids & Thermal Laboratory*</span><a class ="myImage"><img src="images/under_construction.png"/></a></li>
+												<li>EGME 407  Heat Transfer</li>
+												<li>EGME 411  Mech Control Systems*</li> 
+												<li>EGME 421  Mechanical Design</li>
+												<li>EGME 431  Mechanical Vibrations </li>
+												<li>EGME 401  Egr Economics & Profnism</li>
+												<li>EGME 414  Design Project - I</li>
+												<li>EGME 456  Intro to Mechatronics*</li>
+                                                <li>EGME 419  Design Project - II</li>
+                                                <li>EGME 430  Intro to Continuum Mechanics*</li>
+                                                <li>EGME 438  Analytical Methods In Eng*</li>
+                                                <li>EGME 476B Energy & Power Laboratory*</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-6 col-12-medium">
+											<h4>Computer Science Minor</h4>
+                                            <ul>
+												<li>CPSC 131  Data Structures  </li>
+                                                <li>CPSC 332  File Structure & Database </li>
+                                                <li>CPSC 386  Intro to Game Design</li>
+                                                <li>CPSC 449  Web Back-End Engineering </li>
+                                            </ul>
+                                        </div>
+									</div>
+									
+									    <a class="button primary fit" onclick="displayTranscript()">Transcripts as inline plain text!</a>
                                     <div id = "transcript" style="display: none"><pre><code>	
 UNOFFICIAL STUDENT ACADEMIC RECORD
 
@@ -225,49 +273,19 @@ Total    166.00  166.00     147.00  517.00    3.52   3.52
 
 Repeat info on Titan Online via Withdrawals/Repeats link
 --------------  End of Undergraduate Record  --------------</code></pre></div>
-                                    <p></p>
-                                    <div class="row">
-                                        <div class="col-6 col-12-medium">
-                                            <h4>Relevant Courses Taken</h4>
-                                            <ul>
-                                                <li>EGME 304  Thermodynamics </li>
-                                                <li>MATH 250A Calculus III</li>
-                                                <li>EGCE 302  Dynamics</li>
-                                                <li>EGEE 203  Electric Circuits</li>
-                                                <li>EGEE 203L Electric Circuits Lab</li>
-                                                <li>EGME 331  Mech Behavior Materials </li>
-                                                <li>MATH 250B Intro Lin Alg & Dif Equations</li>
-                                                <li>EGME 306A Unified Laboratory</li>
-                                                <li>EGME 308  Eng Analysis</li>
-                                                <li>EGME 322L Intro Comp Aided Design</li>
-                                                <li>Mechanical Controls Systems</li>
-                                                <li>Mechatronics</li>
-                                                <li>Continuum Mechanics</li>
-                                                <li></li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-6 col-12-medium">
-                                            <ul>
-                                                <li>Mechanical Controls Systems</li>
-                                                <li>Mechatronics</li>
-                                                <li>Continuum Mechanics</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-6 col-12-medium">
-                                            <h4>Courses Taken</h4>
-                                            <ul>
-                                                <li>Mechanical Controls Systems</li>
-                                                <li>Mechatronics</li>
-                                                <li>Continuum Mechanics</li>
-                                            </ul>
-                                        </div>
-                                    </div>
+									<a href="https://github.com/RyanAGauthier/RyanAGauthier.github.io/blob/master/CSUFUnofficialTranscripts.txt" class="button fit">Transcripts as a PDF</a>
+									<p></p>
 
-									<section class="features">
+									<h3 class="major">Fullerton College</h3>
+									<p>At Fullerton, I tried to cover all my bases (as I didn't know where I was going to transfer to) and ended up with a ton of units, 78 in Total. My favorite part of my time at Fullerton was definitely my time with the Speech and Debate team (thank you Doug Kresse, Jeffrey Samano, and Jeanette Rodriguez Salcedo!), my physics classes (thank you Brendan O'Neill and Benjamin Crowell!), and my C language class (thank you Scott Edwards!).</p>
+									<p>Here's a few of the more relevant classes, followed again by my unofficial transcripts, this time only available as a pdf.</p>
+									<a href="https://github.com/RyanAGauthier/RyanAGauthier.github.io/blob/master/FullertonCollegeUnofficialTranscripts.pdf" class="button primary fit">Transcripts as a PDF</a>
+
+									<!--<section class="features">
 										<article>
 											<a href="#" class="image"><img src="images/pic04.jpg" alt="" /></a>
-											<h3 class="major">Sed feugiat lorem</h3>
-											<p>Lorem ipsum dolor sit amet, consectetur adipiscing vehicula id nulla dignissim dapibus ultrices.</p>
+											<h3 class="major">CSUF</h3>
+											<p>For reference </p>
 											<a href="#" class="special">Learn more</a>
 										</article>
 										<article>
@@ -276,7 +294,7 @@ Repeat info on Titan Online via Withdrawals/Repeats link
 											<p>Lorem ipsum dolor sit amet, consectetur adipiscing vehicula id nulla dignissim dapibus ultrices.</p>
 											<a href="#" class="special">Learn more</a>
 										</article>
-									</section>
+									</section>-->
 
 								</div>
 							</div>
@@ -286,7 +304,7 @@ Repeat info on Titan Online via Withdrawals/Repeats link
 				<!-- Footer -->
 					<section id="footer">
 						<div class="inner">
-							<h2 class="major">Get in touch</h2>
+							<!--<h2 class="major">Get in touch</h2>
 							<p>Cras mattis ante fermentum, malesuada neque vitae, eleifend erat. Phasellus non pulvinar erat. Fusce tincidunt, nisl eget mattis egestas, purus ipsum consequat orci, sit amet lobortis lorem lacus in tellus. Sed ac elementum arcu. Quisque placerat auctor laoreet.</p>
 							<form method="post" action="#">
 								<div class="fields">
@@ -318,7 +336,7 @@ Repeat info on Titan Online via Withdrawals/Repeats link
 								<li class="icon brands fa-twitter"><a href="#">twitter.com/untitled-tld</a></li>
 								<li class="icon brands fa-facebook-f"><a href="#">facebook.com/untitled-tld</a></li>
 								<li class="icon brands fa-instagram"><a href="#">instagram.com/untitled-tld</a></li>
-							</ul>
+							</ul>-->
 							<ul class="copyright">
 								<li>&copy; Untitled Inc. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
 							</ul>
