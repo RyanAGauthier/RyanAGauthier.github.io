@@ -11,16 +11,28 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<!-- The following is included to remind future me about it, so that I don't get confused with why my spanned images mess up
+			 position: absolute;
+			 border:none;-->
 		<style>
 			span + .image.fit{
 				display: none;
 			}
 			span:hover + .image.fit{
 				display: block;
+				margin-bottom: 0px;
+				position: absolute;
+				width: auto;
+			}
+			.myImage{
+				display: none;
+			}
+			span:hover + .myImage{
+				display: block;
+				position: absolute;
+				border: none
 			}
 		</style>
-		<!-- position: absolute;
-				border:none;-->
 	</head>
 	<body class="is-preload">
 
@@ -71,39 +83,40 @@
                                         <div class="col-6 col-12-medium">
                                             <h4>Relevant Courses Taken</h4>
                                             <ul>
-                                                <li><span>EGME 304  Thermodynamics</span><a class ="image fit"><img src="images/under_construction.png"/></a></li>
+                                                <li>EGME 304  Thermodynamics</li>
                                                 <li>MATH 250A Calculus III</li>
                                                 <li>EGCE 302  Dynamics</li>
                                                 <li>EGEE 203  Electric Circuits</li>
                                                 <li>EGEE 203L Electric Circuits Lab</li>
                                                 <li>EGME 331  Mech Behavior Materials</li>
                                                 <li>MATH 250B Intro Lin Alg & Dif Equations</li>
-                                                <li><span>EGME 306A Unified Laboratory*</span><a class ="myImage"><img src="images/under_construction.png"/></a></li>
+                                                <li><span>EGME 306A Unified Laboratory*</span><a class ="image fit"><img src="images/CourseDescriptions/EGME306ADesc.PNG"/></a></li>
                                                 <li>EGME 308  Eng Analysis</li>
 												<li>EGME 322L Intro Comp Aided Design</li>
 												<li>EGME 333  Fluid Mechanics</li>
 												<li>EGME 335  Kinematics of Mechanisms</li> 
-												<li><span>EGME 306B Fluids & Thermal Laboratory*</span><a class ="myImage"><img src="images/under_construction.png"/></a></li>
+												<li><span>EGME 306B Fluids & Thermal Laboratory*</span><a class ="image fit"><img src="images/CourseDescriptions/EGME306BDesc.PNG"/></a></li>
 												<li>EGME 407  Heat Transfer</li>
-												<li>EGME 411  Mech Control Systems*</li> 
+												<li><span>EGME 411  Mech Control Systems*</span><a class ="image fit"><img src="images/CourseDescriptions/EGME411Desc.PNG"/></a></li> 
 												<li>EGME 421  Mechanical Design</li>
 												<li>EGME 431  Mechanical Vibrations </li>
 												<li>EGME 401  Egr Economics & Profnism</li>
 												<li>EGME 414  Design Project - I</li>
-												<li>EGME 456  Intro to Mechatronics*</li>
+												<li><span>EGME 456  Intro to Mechatronics*</span><a class ="image fit"><img src="images/CourseDescriptions/EGME456Desc.PNG"/></a></li>
+												<li><span>EGME 476A Dynamic Sys & Contrls Lab*</span><a class ="image fit"><img src="images/CourseDescriptions/EGME476ADesc.PNG"/></a></li>
                                                 <li>EGME 419  Design Project - II</li>
-                                                <li>EGME 430  Intro to Continuum Mechanics*</li>
+                                                <li><span>EGME 430  Intro to Continuum Mechanics*</span><a class ="image fit"><img src="images/CourseDescriptions/EGME430Desc.PNG"/></a></li>
                                                 <li>EGME 438  Analytical Methods In Eng*</li>
-                                                <li>EGME 476B Energy & Power Laboratory*</li>
+                                                <li><span>EGME 476B Energy & Power Laboratory*</span><a class ="image fit"><img src="images/CourseDescriptions/EGME476BDesc.PNG"/></a></li>
                                             </ul>
                                         </div>
                                         <div class="col-6 col-12-medium">
 											<h4>Computer Science Minor</h4>
                                             <ul>
-												<li>CPSC 131  Data Structures  </li>
-                                                <li>CPSC 332  File Structure & Database </li>
-                                                <li>CPSC 386  Intro to Game Design</li>
-                                                <li>CPSC 449  Web Back-End Engineering </li>
+												<li><span>CPSC 131  Data Structures*</span><a class ="image fit"><img src="images/CourseDescriptions/CPSC131Desc.PNG"/></a></li>
+                                                <li><span>CPSC 332  File Structure & Database*</span><a class ="image fit"><img src="images/CourseDescriptions/CPSC322Desc.PNG"/></a></li>
+                                                <li><span>CPSC 386  Intro to Game Design*</span><a class ="image fit"><img src="images/CourseDescriptions/CPSC386Desc.PNG"/></a></li>
+                                                <li><span>CPSC 449  Web Back-End Engineering*</span><a class ="image fit"><img src="images/CourseDescriptions/CPSC449Desc.PNG"/></a></li>
                                             </ul>
                                         </div>
 									</div>
