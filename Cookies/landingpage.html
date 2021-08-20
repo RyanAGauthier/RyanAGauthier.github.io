@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name ="viewport" content="width=device-width, initial-scale=1">
+        <title>Test HTML Doc</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <style>
+          body{
+            padding-bottom: 50px;
+          }
+        </style>
+        
+    </head>
+    <body>
+
+      <nav class="navbar fixed-bottom navbar-light bg-light">
+        <div class="container-fluid">
+              <a class="navbar-brand text-wrap" href="https://robotsbyryan.com">Cookies By Ryan</a>
+              <a class="navbar-text" style="text-align: center">Cookies clicked: <span id="counter">0</span> </a>
+              <button type="button" id="darkmodeswitch" onClick="darkmode();" class="btn btn-dark " data-toggle="button" aria-pressed="false" autocomplete="off">
+                🌑
+              </button>
+              
+        </div>
+      </nav>
+
+      <main>
+      <!--<img src="pikabruh.png" class="target" style="right: 0px;position: absolute;z-index: 5;" alt="...">-->
+        <div class="d-flex flex-column container-fluid bg-light text-dark mx-0">
+          <!-- <div class="row my-3 fixed-bottom">
+            <div class="col-6">
+              BRUH
+            </div>
+            <div class="col-6">
+              BRUH
+            </div>
+          </div> -->
+          <h2 class="text-center display-2 text-wrap">Welcome!</h2>
+          <div class="row my-3">
+            <div class="col-sm-6 px-0">
+              <div class="card h-100 text-dark" style="background-color: azure;">
+                <div class="card-body">
+                  <h5 class="card-title">Cookies?</h5>
+                  <p class="card-text">Cookies, beyond just being delicious confections, are responsible for a variety of necessary requirements for websites - namely: Authentication, Authorization, and Session Management.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4">
+              <img src="cookie300.png" class="img-fluid rounded-end d-block mx-auto" id="switch" alt="...">
+            </div>
+          </div>
+
+          <div class="row my-3">
+            <div class="col-sm-4">
+              <img src="oreo300.png" class="img-fluid rounded-end mx-auto d-block" alt="https://images.unsplash.com/photo-1627901585027-fac0ffee14ec?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80"style="max-height: 300px;"...">
+            </div>
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4 px-0">
+              <div class="card h-100 border-primary bg-info text-dark">
+                <div class="card-body">
+                  <h5 class="card-title">Cookies!</h5>
+                  <p class="card-text">Cookies take the form of key=value</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row my-3">
+            <div class="col-sm-4 px-0">
+              <div class="card h-100 bg-info text-dark">
+                  <div class="card-body ">
+                      <h5 class="card-title">Cookies</h5>
+                      <p class="card-text">So what do I want to do? I want to make virtual cookies into real ones. The project is a 3-phase project taking inspiration from "Twitch plays pokemon." I'm gunna build an arm, automate a toaster oven, and hook it up to the internet.</p>
+                  </div>
+                </div>
+              </div>
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4 px-0">
+              <img src="pikabruh.png" class="img-fluid rounded-end mx-auto d-block g-0" alt="...">
+            </div>
+          </div>
+
+          <div class="row justify-content-center py-3">
+            <div class="card border-info mb-3 text-dark bg-light" style="max-width: 18rem;">
+              <div class="card-header">What're your cookies?</div>
+              <div class="card-body ">
+                <h5 class="card-title">Your cookie:</h5>
+                <p class="card-text">
+                  <span id="cookieid"></span>
+                </p>
+              </div>
+          </div>
+          <div class="row justify-content-sm-center text-center">
+            <blockquote class="blockquote">
+              <h1 class="display-3 text-wrap">Something Sweeter is on the Way</h1>
+            </blockquote>
+          </div>
+          <div class="row justify-content-center">
+            <img src="oven.png" class="img-fluid rounded-end" onclick="console.log('bruh');"; style="width: 18rem;" alt="https://pixabay.com/users/janjf93-3084263/">
+          </div>
+        </div>
+      </div>
+      </main>
+        <script>
+          //Helper function to toggle classes
+          function wow(el, i, para1, para2){
+            if(el.classList.contains(para1) || el.classList.contains(para2))
+                {
+                  el.classList.toggle(para1);
+                  el.classList.toggle(para2);
+                };
+            
+          };
+
+          function updateCookieCount(count, element){
+            count++;
+            element.innerHTML = mycounter.toString()
+          };
+          //Implements darkmode by simply toggling a bunch of classes after finding all elements with them
+          function darkmode(){
+            var darkToggle = document.getElementById('darkmodeswitch');
+            darkToggle.classList.toggle('btn-dark'); 
+            darkToggle.classList.toggle('btn-light');
+            if(darkToggle.innerText == "🌑"){
+              console.log("MOON FOUND!");
+              darkToggle.innerText = "☀️"
+            } else if (darkToggle.innerText == "☀️"){
+              console.log("SUN FOUND!");
+              darkToggle.innerText = "🌑"
+            }
+            var swappable = document.querySelectorAll(".bg-light, .border-primary, .border-info, .bg-dark, .navbar-light, .navbar-dark, .bg-info, .bg-primary");
+              swappable.forEach(function(el, i){
+                console.log('element found');
+                wow(el, i, "navbar-light", "navbar-dark");
+                wow(el, i, "border-primary", "border-info");
+                wow(el, i, "bg-light", "bg-dark");
+                wow(el, i, "bg-primary", "bg-info");
+                wow(el, i, "text-dark", "text-light");
+              });
+          };
+          //As soon as the window loads, time to hook in a bunch of listeners and set some display values. 
+          //Some of the element setting stuf can probably be pure css considering .nav is defined somewhere
+          window.onload=function(){
+            var mycounter = 0;
+            let box = document.querySelector('.navbar');
+            let height = box.clientHeight;
+            console.log('Height of nav is' + height.toString());
+            document.body.style.paddingBottom = height.toString() + "px";
+            console.log('Height of nav is now ' + document.body.style.paddingBottom);
+            var countertext = document.getElementById('counter');
+            countertext.innerText = mycounter.toString().padStart(10, "&nbsp");
+            var cookiespan = document.getElementById('cookieid');
+            var element = document.getElementById('switch');
+            element.addEventListener('click', event => {
+              console.log('hello');
+              console.log(event.detail);
+              let box = document.querySelector('.navbar');
+              let height = box.clientHeight;
+              console.log('Height of nav is' + height.toString());
+              document.body.style.paddingBottom = height.toString() + "px";
+              console.log('Height of nav is now ' + document.body.style.paddingBottom);
+              document.cookie = "you=clickedpikamee"
+              cookiespan.innerText = document.cookie;
+              mycounter++;
+              countertext.innerHTML = mycounter.toString();
+          });
+            element.addEventListener('dragstart', () => {
+              var tempimg = new Image();
+              tempimg.src = "pikabruh.png";
+              event.dataTransfer.setDragImage(tempimg, 100,100);
+              mycounter++;
+              countertext.innerHTML = mycounter.toString();
+              console.log(mycounter.toString().padStart(10));
+          });
+          element.addEventListener('mouseover', () => {
+              mycounter++;
+              countertext.innerHTML = mycounter.toString();
+              console.log(mycounter.toString().padStart(10));
+          });
+          console.log('ayylmao');
+          
+        };
+        </script>
+    </body>
+</html>
