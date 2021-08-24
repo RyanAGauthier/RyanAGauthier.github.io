@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name ="viewport" content="width=device-width, initial-scale=1">
+        <title>Cookies by Ryan</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <style>
+          body{
+            padding-bottom: 50px;
+          }
+          
+          #counter{
+            margin-left: -1em;
+          }
+          @media (min-width: 576px) {
+            #counter{
+              margin-left: -7em;
+            } 
+          }
+          
+        </style>
+        
+    </head>
+    <body>
+
+      <nav class="navbar fixed-bottom navbar-light bg-light">
+        <div class="container-fluid d-flex flex-row justify-content-between">
+                <a class="navbar-brand text-wrap" href="https://robotsbyryan.com">Cookies By Ryan</a>
+                <!--I don't know why it's off by 7em-->
+                <a class="navbar-text" id="counter"><!--Cookies clicked: <span id="counter">0</span>--></a>
+                <button type="button" id="darkmodeswitch" onClick="darkmode();" class="btn btn-dark " data-toggle="button" aria-pressed="false" autocomplete="off">
+                  🌑
+                </button>
+        </div>
+      </nav>
+
+      <main>
+      <!--<img src="pikabruh.png" class="target" style="right: 0px;position: absolute;z-index: 5;" alt="...">-->
+        <div class="d-flex flex-column container-fluid bg-light text-dark">
+          <h2 class="text-center display-2 text-wrap">Welcome!</h2>
+          <div class="row my-3">
+            <div class="col-sm-6">
+              <div class="card h-100 text-dark bg-info border-primary">
+                <div class="card-body">
+                  <h5 class="card-title">What on earth are cookies?</h5>
+                  <p class="card-text">It's tough to really talk about cookies without talking about the hyper-text transfer protocol (HTTP). HTTP is the language of the internet, and there is way, way more to it than what you need to know to get your head around cookies.
+                    <br>All you need to know to *appreciate* this project is that there are things called requests, responses, and headers. Two of these headers are the related "Cookie" and "Set-Cookie" headers. 
+                    <br>The "Set-Cookie" header is sent by some web server and does exactly what it says, setting some cookie within your browser that will then be sent back in the "Cookie" header on future communications with that web server.
+                    <!--<br>HTTP communications largely take the form of a client-server architecture: there are "requests" made to the server by the client and "responses" sent from the server to the client. Much like English there are verbs and ...headers. Verbs take the form of GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS, and many more. 
+                    <br>Headers take the form of things like "ContentType", "X-literally-anything", and the all-important "Set-Cookie". The "Set-Cookie" header is a special one, and looks something like this:</p>
+                    <code>Set-Cookie: mykey=myvalue; expires=Mon, 17-Jul-2017 16:06:00 GMT; Max-Age=31449600; Path=/; secure</code>
+                    <br>as it guarantees* in fairly simple terms that the browser will send something like it back with each subsequent request. 
+                    <br>"But how can "
+                    <br>Cookies, beyond just being delicious confections, are responsible for a variety of necessary requirements for websites - namely: Authentication, Authorization, and Session Management.--></p>
+                  <div class="container-fluid d-flex flex-row justify-content-between">
+                    <a>ayylmao</a>
+                    <a>ayylmao</a>
+                    <a>ayylmao</a>
+                    <a>ayylmao</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-4 offset-sm-2">
+              <img src="cookie300.png" class="img-fluid rounded-end d-block mx-auto cookie" id="switch">
+            </div>
+          </div>
+
+          <div class="row my-3">
+            <div class="col-sm-4">
+              <img src="oreo300.png" class="img-fluid rounded-end mx-auto d-block cookie" alt="https://images.unsplash.com/photo-1627901585027-fac0ffee14ec?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80"style="max-height: 300px;">
+            </div>
+            <div class="col-sm-6 offset-sm-2">
+              <div class="card h-100 border-primary bg-info text-dark">
+                <div class="card-body">
+                  <h5 class="card-title">Cookies!</h5>
+                  <p class="card-text">But what does it set? Cookies ultimately take the form of key=value pairs, with some extra fluff. This extra fluff dictates how long the cookie should be stored, what sites it should be sent to and when it should be withheld.
+                    <br>Most of your cookies are accessible through the browser's document.cookie object.   Wanna learn more? Check out the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies">docs</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row my-3">
+            <div class="col-sm-6">
+              <div class="card h-100 bg-info text-dark border-primary">
+                  <div class="card-body ">
+                      <h5 class="card-title">Cookies</h5>
+                      <p class="card-text">So what do I want to do? I want to make virtual cookies into real ones. The project is a 3-phase project taking inspiration from "Twitch plays pokemon." I'm gunna build an arm, automate a toaster oven, and hook it up to the internet.</p>
+                  </div>
+                </div>
+              </div>
+            <div class="col-sm-4 offset-sm-2 px-0">
+              <img src="cookiespread300.png" class="img-fluid rounded-end mx-auto d-block g-0 cookie" title="https://pixabay.com/illustrations/cookies-candy-dessert-baked-3211047/"alt="https://pixabay.com/illustrations/cookies-candy-dessert-baked-3211047/">
+            </div>
+          </div>
+
+          <div class="row justify-content-center py-3">
+            <div class="container d-flex flex-row justify-content-evenly" style="max-width: 33rem;">
+              <button type="button" class="btn btn-primary" onclick='selectCookieFlavor("oreo")'>Oreo</button>
+              <button type="button" class="btn btn-primary" onclick='selectCookieFlavor("chocolate chip")'>Chocolate Chip</button>
+              <button type="button" class="btn btn-primary" onclick='selectCookieFlavor("candy")'>Candy</button>
+            </div>
+          </div>
+
+          <div class="row justify-content-center py-3">
+            <div class="card border-info mb-3 text-dark bg-light" style="max-width: 18rem;">
+              <div class="card-header">Select a cookie above! <button type="button" class="btn btn-danger" onclick='clearCookie()'>CLR</button></div>
+              <div class="card-body ">
+                <h5 class="card-title">Your cookie:</h5>
+                <p class="card-text">
+                  <span id="cookieid"></span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="row justify-content-center py-3">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="toast-header">
+                <img src= class="rounded me-2" alt="...">
+                <strong class="me-auto">Bootstrap</strong>
+                <small class="text-muted">just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+              <div class="toast-body">
+                See? Just like this.
+              </div>
+            </div>
+          </div> -->
+
+          <div class="row justify-content-sm-center text-center">
+            <blockquote class="blockquote">
+              <h1 class="display-3 text-wrap">Something Sweeter is on the Way...</h1>
+
+            </blockquote>
+          </div>
+
+          <div class="row justify-content-center">
+            <img src="oven.png" class="img-fluid rounded-end" onclick="{console.log('bruh');}" style="width: 18rem;" alt="https://pixabay.com/users/janjf93-3084263/">
+          </div>
+
+        </div>
+      </main>
+
+        <script>
+          //Helper function to toggle classes
+          function wow(el, i, para1, para2){
+            if(el.classList.contains(para1) || el.classList.contains(para2))
+                {
+                  el.classList.toggle(para1);
+                  el.classList.toggle(para2);
+                };
+            
+          };
+
+          function selectCookieFlavor(flavor){
+            if(!document.cookie.split("; ").find(row => row.startsWith("flavor"))){
+              document.cookie="flavor=" + flavor;
+              var cookiespan = document.getElementById('cookieid');
+              cookiespan.innerText = document.cookie;
+            }
+          }
+
+          function clearCookie(){
+            if(document.cookie.split("; ").find(row => row.startsWith("flavor"))){
+              document.cookie="flavor=none; max-age=0"
+              var cookiespan = document.getElementById('cookieid');
+              cookiespan.innerText = document.cookie;
+            }
+          }
+
+          function updateCookieCount(count, el){
+            count++;
+            el.innerHTML = "Cookies clicked: " + count.toString();
+            console.log("COOKIE COUNT: " + count.toString());
+            return [count,el];
+          };
+          
+          //Implements darkmode by simply toggling a bunch of classes after finding all elements with them
+          function darkmode(){
+            var darkToggle = document.getElementById('darkmodeswitch');
+            darkToggle.classList.toggle('btn-dark'); 
+            darkToggle.classList.toggle('btn-light');
+            if(darkToggle.innerText == "🌑"){
+              console.log("MOON FOUND!");
+              darkToggle.innerText = "☀️"
+            } else if (darkToggle.innerText == "☀️"){
+              console.log("SUN FOUND!");
+              darkToggle.innerText = "🌑"
+            }
+            var swappable = document.querySelectorAll(".bg-light, .border-primary, .border-info, .bg-dark, .navbar-light, .navbar-dark, .bg-info, .bg-primary");
+              swappable.forEach(function(el, i){
+                console.log('element found');
+                wow(el, i, "navbar-light", "navbar-dark");
+                wow(el, i, "border-primary", "border-info");
+                wow(el, i, "bg-light", "bg-dark");
+                wow(el, i, "bg-primary", "bg-info");
+                wow(el, i, "text-dark", "text-light");
+              });
+          };
+          //As soon as the window loads, time to hook in a bunch of listeners and set some display values. 
+          //Some of the element setting stuf can probably be pure css considering .nav is defined somewhere
+          window.onload=function(){
+            var mycounter = 0;
+            let box = document.querySelector('.navbar');
+            let height = box.clientHeight;
+            var countertext = document.getElementById('counter');
+            var cookieclass = document.querySelectorAll('.cookie');
+            var cookiespan = document.getElementById('cookieid');
+            cookiespan.innerText = document.cookie;
+            cookieclass.forEach(function(el, i){
+              el.addEventListener('click', ()=>{[mycounter,countertext] = updateCookieCount(mycounter,countertext);});
+            });
+
+            var element = document.getElementById('switch');
+            element.addEventListener('click', event => {
+              console.log('hello');
+              console.log(event.detail);
+              let box = document.querySelector('.navbar');
+              let height = box.clientHeight;
+              console.log('Height of nav is' + height.toString());
+              document.body.style.paddingBottom = height.toString() + "px";
+              console.log('Height of nav is now ' + document.body.style.paddingBottom);
+              cookiespan.innerText = document.cookie;
+          });
+
+          element.addEventListener('dragstart', ()=>{
+            [mycounter,countertext] = updateCookieCount(mycounter,countertext);
+          });
+          console.log('ayylmao');
+          
+        };
+        </script>
+    </body>
+</html>
