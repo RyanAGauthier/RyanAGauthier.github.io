@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name ="viewport" content="width=device-width, initial-scale=1">
+        <title>Cookies by Ryan</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <noscript>
+        <div class="container-fluid text-center bg-light">
+          <h3 class="text-wrap my-0">This website was developed with javascript in mind for element positioning and some neat easter eggs. It'll still look okay, but stuff will be broken.</h2>
+        </div>
+        </noscript>
+        
+        <style>
+          body{
+            padding-bottom: 50px;
+          }
+          
+          .cookieclicker{
+            position: absolute; 
+            visibility: hidden;
+          }
+
+          #counter{
+            margin-left: -1em;
+          }
+    
+          @media (min-width: 440px) {
+            #counter{
+              margin-left: -7em;
+            } 
+
+          }
+          
+        </style>
+        
+    </head>
+    <body>
+
+      <nav class="navbar fixed-bottom navbar-light bg-light">
+        <div class="container-fluid d-flex flex-row justify-content-between">
+                <a class="navbar-brand text-wrap" href="https://robotsbyryan.com">Cookies By Ryan</a>
+                <!--I don't know why it's off by 7em-->
+                <a class="navbar-text" style="text-decoration: none;" id="counter"><!--Cookies clicked: <span id="counter">0</span>--></a>
+                <p class='cookieclicker text-dark bg-light text-wrap text-center' onclick="setInterval(()=>{document.querySelector('.cookieclicker').style.visibility = 'hidden';},3000)"> You're pretty good, ever thought of <a class="link-danger" href='https://orteil.dashnet.org/cookieclicker/' target='_blank'>going to the big leagues?</a></p>
+                <button type="button" id="darkmodeswitch" onClick="darkmode();" class="btn btn-dark " data-toggle="button" aria-pressed="false" autocomplete="off">
+                  🌑
+                </button>
+        </div>
+      </nav>
+
+      <main>
+      <!--<img src="pikabruh.png" class="target" style="right: 0px;position: absolute;z-index: 5;" alt="...">-->
+        <div class="d-flex flex-column container-fluid bg-light text-dark">
+          <h2 class="text-center display-2 text-wrap">This Site Uses Cookies (Duh)</h2>
+          <div class="row my-3 align-items-center">
+            <div class="col-sm-6">
+              <div class="card h-100 text-dark bg-info border-primary">
+                <div class="card-body">
+                  <h5 class="card-title display-5">What on earth are (web) cookies?</h5>
+                  <p class="card-text lead">Cookies are, at their core, a very simple yet powerful means of communciation between a web browser and a server. 
+                    Little more than (key=value) pairs and some metadata, these unbaked goods enable a wide swath of the functionality of the modern internet.
+                    Much of their utility is derived from the fact that they enable web servers to store information in your browser that persists even when the browser is closed and the computer shut off.
+                    <br><br>
+                    Check out the box below - you can set a cookie to be one of three flavors. If you close the website and come back, you'll notice that the previously selected flavor is still in the box. 
+                    The cookie has been saved, and was likely sent to the web server when you navigated back to this site. To get rid of this, you'll either have to clear your cookies or play around with 
+                    the dev tools.
+                    <br><br>Now, unless you're a big fan of web development like me, nothing here has been particularly sweet. So what's the big deal?</p>
+                    <!--<br>HTTP communications largely take the form of a client-server architecture: there are "requests" made to the server by the client and "responses" sent from the server to the client. Much like English there are verbs and ...headers. Verbs take the form of GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS, and many more. 
+                    <br>Headers take the form of things like "ContentType", "X-literally-anything", and the all-important "Set-Cookie". The "Set-Cookie" header is a special one, and looks something like this:</p>
+                    <code>Set-Cookie: mykey=myvalue; expires=Mon, 17-Jul-2017 16:06:00 GMT; Max-Age=31449600; Path=/; secure</code>
+                    <br>as it guarantees* in fairly simple terms that the browser will send something like it back with each subsequent request. 
+                    <br>"But how can "
+                    <br>Cookies, beyond just being delicious confections, are responsible for a variety of necessary requirements for websites - namely: Authentication, Authorization, and Session Management.--></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-4 offset-sm-2">
+              <img src="cookie300.png" class="img-fluid rounded-end d-block mx-auto cookie" id="switch">
+            </div>
+          </div>
+
+          <div class="row justify-content-center py-3">
+            <div class="col-sm-6">
+              <div class="card border-info mb-3 text-dark bg-light text-center"> <!--style="max-width: 18rem;"-->
+                <div class="container d-flex flex-row justify-content-evenly pt-3" style="max-width: 33rem;">
+                  <button type="button" class="btn btn-info" onclick='selectCookieFlavor("oreo")'>Oreo</button>
+                  <button type="button" class="btn btn-info" onclick='selectCookieFlavor("chocolate chip")'>Chocolate Chip</button>
+                  <button type="button" class="btn btn-info" onclick='selectCookieFlavor("candy")'>Candy</button>
+                </div>
+                <div class="card-body ">
+                  <h5 class="card-title">Your cookie:</h5>
+                  <p class="card-text">
+                    <span id="cookieid"></span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row my-3  align-items-center">
+            <div class="col-sm-4">
+              <img src="oreo300.png" class="img-fluid rounded-end mx-auto d-block cookie" alt="https://images.unsplash.com/photo-1627901585027-fac0ffee14ec?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80"style="max-height: 300px;">
+            </div>
+            <div class="col-sm-6 offset-sm-2">
+              <div class="card h-100 border-primary bg-info text-dark">
+                <div class="card-body">
+                  <h5 class="card-title display-5">What are they used for?</h5>
+                  <p class="card-text lead">It turns out that being able to store pretty much any character you can think of in a cookie enables a whole mess of utilties. 
+                    Usually these keys are unreadable ASCII nonsense that correspond to hashed and/or encrypted data that ultimately represents extremely pertinent info for a given session. 
+                    Are you logged in? Have you paid? What're your browsing habits? All of these questions can be answered utilizing cookies.  
+                    <br><br>This makes them a bit more interesting, but they're still fairly intangible. 
+                    <br><br>This info can also be seen via the developer tools in your web browser - Application->Cookies for chrome and Storage->Cookies for FireFox. More complicated websites with many dependencies tend to have many more cookies, and they'll be a lot less readable than those shown here.
+                    <br><br>If you want an in-depth overview, check out the <a class="link-primary" href="https://en.wikipedia.org/wiki/HTTP_cookie">Wikipedia entry</a>, <a class="link-primary" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies">MDN docs</a> and
+                      <a class="link-primary" href="https://web.dev/samesite-cookies-explained/">Google</a> docs.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row my-3 align-items-center">
+            <div class="col-sm-6">
+              <div class="card h-100 bg-info text-dark border-primary">
+                  <div class="card-body">
+                      <h5 class="card-title display-5">What's the plan, chef?</h5>
+                      <p class="card-text lead">This brings us to the genesis for this website. I want to make virtual cookies into real ones. 
+                        By storing literal flavors into the cookies being sent to my website, interpretting and aggregating the data, and hooking up a handful of motors to a fridge 
+                        (filled with sweet, sweet dough) and a toaster oven, virtual strings of text can be transmuted into delicious confections. 
+                        The project is a 3-phase project taking heavy inspiration from "Twitch plays pokemon." I'm gunna build an arm, automate a toaster oven, and hook it up to the internet.
+                        <br><br>I'm hoping that through this project I can learn a little bit more of front-end, a lot more javascript, and a little bit more of what it takes to run a website.
+                        Because I am extremely unmotivated unless forced, there's a clock below. It's mainly for me.
+                        <br><br>Also, if you've got literally infinite free time, you should click one of the cookie images
+                         a few times (read: like 100) and see what happens.</p>
+                  </div>
+                </div>
+              </div>
+            <div class="col-sm-4 offset-sm-2 px-0">
+              <img src="cookiespread300.png" class="img-fluid rounded-end mx-auto d-block g-0 cookie" title="https://pixabay.com/illustrations/cookies-candy-dessert-baked-3211047/"alt="https://pixabay.com/illustrations/cookies-candy-dessert-baked-3211047/">
+            </div>
+          </div>
+
+          <div class="row justify-content-sm-center text-center">
+            <blockquote class="blockquote">
+              <h1 class="display-3 text-wrap">Something Sweeter is on the Way<br>Check back in <span id="timer"></span></h1>
+            </blockquote>
+          </div>
+
+          <div class="row justify-content-center py-3">
+            <div class="col-sm-12">
+              <div class="card border-info mb-3 text-dark bg-light text-center"> <!--style="max-width: 18rem;"-->
+                <div class="container d-flex flex-row justify-content-evenly pt-3">
+                  <div class="card border-info mb-3 text-dark bg-light text-center">
+                    <div class="card-body ">
+                      <h5 class="card-title">Your cookie: <span id="cookie1"></span></h5>
+                      <p class="card-text">
+                        Count: <span id="cookie1count"></span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="card border-info mb-3 text-dark bg-light text-center">
+                    <div class="card-body ">
+                      <h5 class="card-title">Your cookie: <span id="cookie2"></span></h5>
+                      <p class="card-text">
+                        Count: <span id="cookie2count"></span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="card border-info mb-3 text-dark bg-light text-center">
+                    <div class="card-body ">
+                      <h5 class="card-title">Your cookie: <span id="cookie3"></span></h5>
+                      <p class="card-text">
+                        Count: <span id="cookie3count"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body ">
+                  <h5 class="card-title">Your cookie</h5>
+                  <p class="card-text">
+                    <span>haha</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row justify-content-center">
+            <img src="oven.png" class="img-fluid rounded-end" onclick="{console.log('bruh');}" style="width: 18rem;" alt="https://pixabay.com/users/janjf93-3084263/">
+          </div>
+
+        </div>
+      </main>
+
+        <script>
+          //Helper function to toggle classes
+          function wow(el, i, para1, para2){
+            if(el.classList.contains(para1) || el.classList.contains(para2))
+                {
+                  el.classList.toggle(para1);
+                  el.classList.toggle(para2);
+                };
+            
+          };
+
+          function timeToDie(deltaT){
+            deltaT = deltaT - Date.now();
+            let days = Math.floor(deltaT/(1000*60*60*24));
+            let hours = Math.floor((deltaT-(days*1000*60*60*24))/(1000*60*60));
+            let minutes = Math.floor((deltaT-(3600000*(24*days+hours)))/(1000*60));
+            let seconds = Math.floor((deltaT - (60000*(days*60*24+60*hours+minutes)))/1000);
+            //console.log(String(days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds"));
+            return String(days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds");
+          }
+
+          function selectCookieFlavor(flavor){
+            document.cookie="flavor=" + flavor;
+            var cookiespan = document.getElementById('cookieid');
+            cookiespan.innerText = document.cookie;
+          }
+
+          function clearCookie(){
+            if(document.cookie.split("; ").find(row => row.startsWith("flavor"))){
+              document.cookie="flavor=none; max-age=0"
+              var cookiespan = document.getElementById('cookieid');
+              cookiespan.innerText = document.cookie;
+            }
+          }
+
+          function bruh(deltaT){
+            let days = Math.floor(deltaT/(1000*60*60*24));
+            let hours = Math.floor((deltaT-(days*1000*60*60*24))/(1000*60*60));
+            let minutes = Math.floor((deltaT-(3600000*(24*days+hours)))/(1000*60));
+            let seconds = Math.floor((deltaT - (60000*(days*60*24+60*hours+minutes)))/1000);
+            console.log(String(days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds"));
+            return 1;
+          }
+
+          function updateCookieCount(count, el){
+            count++;
+            el.innerHTML = "Cookies clicked: " + count.toString();
+            if(count == 100){
+              let tempEle = document.querySelector(".cookieclicker");
+              tempEle.style.visibility = "visible";
+            }else if(count == 126){
+              let tempEle = document.querySelector(".cookieclicker");
+              tempEle.style.visibility = "hidden";
+            }
+            console.log("COOKIE COUNT: " + count.toString());
+            return [count,el];
+          }
+          
+          //Implements darkmode by simply toggling a bunch of classes after finding all elements with them
+          function darkmode(){
+            var darkToggle = document.getElementById('darkmodeswitch');
+            darkToggle.classList.toggle('btn-dark'); 
+            darkToggle.classList.toggle('btn-light');
+            if(darkToggle.innerText == "🌑"){
+              console.log("MOON FOUND!");
+              darkToggle.innerText = "☀️"
+            } else if (darkToggle.innerText == "☀️"){
+              console.log("SUN FOUND!");
+              darkToggle.innerText = "🌑"
+            }
+            var swappable = document.querySelectorAll(".bg-light, .border-primary, .border-info, .bg-dark, .navbar-light, .navbar-dark, .bg-info, .bg-primary, .text-dark, .text-light, .link-primary, .link-info, .btn-info, .btn-primary");
+              swappable.forEach(function(el, i){
+                console.log('element found');
+                wow(el, i, "navbar-light", "navbar-dark");
+                wow(el, i, "border-primary", "border-info");
+                wow(el, i, "bg-light", "bg-dark");
+                wow(el, i, "bg-primary", "bg-info");
+                wow(el, i, "text-dark", "text-light");
+                wow(el, i, "link-info", "link-primary");
+                wow(el, i, "btn-info", "btn-primary");
+              });
+          };
+          //As soon as the window loads, time to hook in a bunch of listeners and set some display values. 
+          //Some of the element setting stuf can probably be pure css considering .nav is defined somewhere
+          window.onload=function(){
+            console.log("You're pretty good, ever thought of going to the big leagues?".length)
+            var mycounter = 98;
+            let box = document.querySelector('.navbar');
+            let height = box.clientHeight;
+            let releaseDay = new Date('October 25, 2021 06:24:00');
+            console.log("Future day: " + releaseDay);
+            let deltaTime = releaseDay.getTime() - Date.now();
+            console.log("Difference: " + deltaTime);
+            let calenderp = document.getElementById('timer');
+            setInterval(()=>{calenderp.innerText = timeToDie(releaseDay);},1000);
+            const cookiearray = [document.getElementById('cookie1'), document.getElementById('cookie1count'), document.getElementById('cookie2'), document.getElementById('cookie2count'), document.getElementById('cookie3'), document.getElementById('cookie3count')]
+            setInterval(()=>{fetch('http://54.176.96.251/topcookies').then(response => response.json()).then(data => 
+            { cookiearray[0].innerText = data.rankedcookies.cookie1.name;
+              cookiearray[1].innerText = data.rankedcookies.cookie1.count;
+              cookiearray[2].innerText = data.rankedcookies.cookie2.name;
+              cookiearray[3].innerText = data.rankedcookies.cookie2.count;
+              cookiearray[4].innerText = data.rankedcookies.cookie3.name;
+              cookiearray[5].innerText = data.rankedcookies.cookie3.count;
+            })}, 3000);
+            var countertext = document.getElementById('counter');
+            var cookieclass = document.querySelectorAll('.cookie');
+            var cookiespan = document.getElementById('cookieid');
+            let cookienotice = document.querySelector('.cookieclicker');
+            let cwidth = cookienotice.clientWidth;
+            let cheight = cookienotice.clientHeight;
+            cookienotice.style.left = "calc(" + "50vw - " + (cwidth/2).toString() + "px)"; 
+            cookienotice.style.top = "-" + cheight.toString() + "px";
+            console.log(cwidth/2);
+            console.log(cookienotice.style.left);
+            cookiespan.innerText = document.cookie;
+            cookieclass.forEach(function(el, i){
+              el.addEventListener('click', ()=>{[mycounter,countertext] = updateCookieCount(mycounter,countertext);});
+            });
+
+            var element = document.getElementById('switch');
+            element.addEventListener('click', event => {
+              console.log('hello');
+              console.log(event.detail);
+              let box = document.querySelector('.navbar');
+              let height = box.clientHeight;
+              console.log('Height of nav is' + height.toString());
+              document.body.style.paddingBottom = height.toString() + "px";
+              console.log('Height of nav is now ' + document.body.style.paddingBottom);
+              cookienotice.style.left = "calc(" + "50vw - " + (cwidth/2).toString() + "px)"; 
+              cookiespan.innerText = document.cookie;
+          });
+
+          element.addEventListener('dragstart', ()=>{
+            [mycounter,countertext] = updateCookieCount(mycounter,countertext);
+          });
+          console.log('ayylmao');
+          
+        };
+        </script>
+    </body>
+</html>
