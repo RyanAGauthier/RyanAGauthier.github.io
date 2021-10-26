@@ -175,12 +175,6 @@
                     </div>
                   </div>
                 </div>
-                <div class="card-body ">
-                  <h5 class="card-title">Your cookie</h5>
-                  <p class="card-text">
-                    <span>haha</span>
-                  </p>
-                </div>
               </div>
             </div>
           </div>
@@ -250,6 +244,10 @@
             return [count,el];
           }
           
+          function crazyFunction(){
+
+          }
+
           //Implements darkmode by simply toggling a bunch of classes after finding all elements with them
           function darkmode(){
             var darkToggle = document.getElementById('darkmodeswitch');
@@ -288,14 +286,54 @@
             let calenderp = document.getElementById('timer');
             setInterval(()=>{calenderp.innerText = timeToDie(releaseDay);},1000);
             const cookiearray = [document.getElementById('cookie1'), document.getElementById('cookie1count'), document.getElementById('cookie2'), document.getElementById('cookie2count'), document.getElementById('cookie3'), document.getElementById('cookie3count')]
-            setInterval(()=>{fetch('http://54.176.96.251/topcookies').then(response => response.json()).then(data => 
-            { cookiearray[0].innerText = data.rankedcookies.cookie1.name;
+            var currentCookieValues = new Map();
+            currentCookieValues.set("Chocolate Chip", 1);
+            currentCookieValues.set("Candy", 1); 
+            currentCookieValues.set("Oatmeal Raisin", 1);
+            var previousCookiesValues = new Map(currentCookieValues);
+            fetch('http://54.176.96.251/Cookies/topcookies').then(response => response.json()).then(data => 
+            {
+              //get values into dictionary
+              currentCookieValues.set(data.rankedcookies.cookie1.name.replace(/_/g, ' '), data.rankedcookies.cookie1.count)
+              currentCookieValues.set(data.rankedcookies.cookie2.name.replace(/_/g, ' '), data.rankedcookies.cookie2.count)
+              currentCookieValues.set(data.rankedcookies.cookie3.name.replace(/_/g, ' '), data.rankedcookies.cookie3.count)
+              cookiearray[0].innerText = data.rankedcookies.cookie1.name.replace(/_/g, ' ');
               cookiearray[1].innerText = data.rankedcookies.cookie1.count;
-              cookiearray[2].innerText = data.rankedcookies.cookie2.name;
+              cookiearray[2].innerText = data.rankedcookies.cookie2.name.replace(/_/g, ' ');
               cookiearray[3].innerText = data.rankedcookies.cookie2.count;
-              cookiearray[4].innerText = data.rankedcookies.cookie3.name;
+              cookiearray[4].innerText = data.rankedcookies.cookie3.name.replace(/_/g, ' ');
               cookiearray[5].innerText = data.rankedcookies.cookie3.count;
-            })}, 3000);
+            });
+            var interpolate = 0;
+            setInterval(()=>{fetch('http://54.176.96.251/Cookies/topcookies').then(response => response.json()).then(data => 
+            {
+              previousCookiesValues = new Map(currentCookieValues);
+              //get values into dictionary
+              currentCookieValues.set(data.rankedcookies.cookie1.name.replace(/_/g, ' '), data.rankedcookies.cookie1.count)
+              currentCookieValues.set(data.rankedcookies.cookie2.name.replace(/_/g, ' '), data.rankedcookies.cookie2.count)
+              currentCookieValues.set(data.rankedcookies.cookie3.name.replace(/_/g, ' '), data.rankedcookies.cookie3.count)
+              cookiearray[0].innerText = data.rankedcookies.cookie1.name.replace(/_/g, ' ');
+              cookiearray[1].innerText = data.rankedcookies.cookie1.count;
+              cookiearray[2].innerText = data.rankedcookies.cookie2.name.replace(/_/g, ' ');
+              cookiearray[3].innerText = data.rankedcookies.cookie2.count;
+              cookiearray[4].innerText = data.rankedcookies.cookie3.name.replace(/_/g, ' ');
+              cookiearray[5].innerText = data.rankedcookies.cookie3.count;
+            })}, 3600000);
+            setInterval(()=>{
+              //interpolate, currentCookieValues better have a matching string as the text already present
+              for (const [key, value] of currentCookieValues){
+                var prev = previousCookiesValues.get(key);
+                var next = value;
+                var result = (next - prev) * interpolate / 3600000
+                interpolate += 1000;
+                //update
+                for (let i = 0; i<=4; i+=2){
+                  if(cookiearray[i].innerText == key){
+                    cookiearray[i+1].innerText = result;
+                  }
+                }
+              } 
+            },1000)
             var countertext = document.getElementById('counter');
             var cookieclass = document.querySelectorAll('.cookie');
             var cookiespan = document.getElementById('cookieid');
