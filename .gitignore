@@ -3,7 +3,6 @@
 !.gitignore
 !Cookies/
 !caddy.json
-!Caddyfile
 !CookieCount.db
 !README.md
 !Sqlite3Playground.py
