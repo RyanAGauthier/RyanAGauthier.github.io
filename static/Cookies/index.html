@@ -143,7 +143,7 @@
 
           <div class="row justify-content-sm-center text-center">
             <blockquote class="blockquote">
-              <h1 class="display-3 text-wrap">Something Sweeter is on the Way<br>Check back in <span id="timer"></span></h1>
+              <h1 class="display-3 text-wrap">Something Sweeter is here!<br>Click below to select your cookie!</h1>
             </blockquote>
           </div>
 
@@ -156,7 +156,7 @@
                     <div class="card border-info mb-3 text-dark bg-light text-center">
                       <div class="card-body ">
                         <h5 class="card-title">
-                          <span id="cookie1" type="button" class="btn btn-info" onclick='actuallyVote(document.getElementById("cookie1").innerText.replace(" ", "_""))'></button>
+                          <span id="cookie1" type="button" class="btn btn-info" onclick='actuallyVote(document.getElementById("cookie1").innerText.replace(" ", "_"))'></button>
                         </h5>
                         <p class="card-text">
                           Count: <span id="cookie1count"></span>
@@ -207,16 +207,6 @@
             
           };
 
-          function timeToDie(deltaT){
-            deltaT = deltaT - Date.now();
-            let days = Math.floor(deltaT/(1000*60*60*24));
-            let hours = Math.floor((deltaT-(days*1000*60*60*24))/(1000*60*60));
-            let minutes = Math.floor((deltaT-(3600000*(24*days+hours)))/(1000*60));
-            let seconds = Math.floor((deltaT - (60000*(days*60*24+60*hours+minutes)))/1000);
-            //console.log(String(days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds"));
-            return String(days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds");
-          }
-
           function actuallyVote(cookiechoice){
             try{
               document.cookie = 'cookiechoice=' + cookiechoice;
@@ -227,7 +217,18 @@
                   'cookie': 'cookiechoice=${cookiechoice}'
                 }*/}).then(response=>{
                 if (response.status == 200){
-                  alert('Cookie choice of ${ cookiechoice } submitted!')
+                  alert(`Cookie choice of ${ cookiechoice } submitted!`);
+                  fetch('Cookies/topcookies').then(response => response.json()).then(data => {
+                      currentCookieValues.set(data.rankedcookies.cookie1.name.replace(/_/g, ' '), data.rankedcookies.cookie1.count)
+                      currentCookieValues.set(data.rankedcookies.cookie2.name.replace(/_/g, ' '), data.rankedcookies.cookie2.count)
+                      currentCookieValues.set(data.rankedcookies.cookie3.name.replace(/_/g, ' '), data.rankedcookies.cookie3.count)
+                      cookiearray[0].innerText = data.rankedcookies.cookie1.name.replace(/_/g, ' ');
+                      cookiearray[1].innerText = data.rankedcookies.cookie1.count;
+                      cookiearray[2].innerText = data.rankedcookies.cookie2.name.replace(/_/g, ' ');
+                      cookiearray[3].innerText = data.rankedcookies.cookie2.count;
+                      cookiearray[4].innerText = data.rankedcookies.cookie3.name.replace(/_/g, ' ');
+                      cookiearray[5].innerText = data.rankedcookies.cookie3.count;
+                    }).catch(error=>console.error(error));
                   }
                 else{alert('Cookie choice failed')}
                 })
@@ -249,15 +250,6 @@
               var cookiespan = document.getElementById('cookieid');
               cookiespan.innerText = document.cookie;
             }
-          }
-
-          function bruh(deltaT){
-            let days = Math.floor(deltaT/(1000*60*60*24));
-            let hours = Math.floor((deltaT-(days*1000*60*60*24))/(1000*60*60));
-            let minutes = Math.floor((deltaT-(3600000*(24*days+hours)))/(1000*60));
-            let seconds = Math.floor((deltaT - (60000*(days*60*24+60*hours+minutes)))/1000);
-            console.log(String(days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds"));
-            return 1;
           }
 
           function updateCookieCount(count, el){
@@ -305,21 +297,14 @@
           //As soon as the window loads, time to hook in a bunch of listeners and set some display values. 
           //Some of the element setting stuf can probably be pure css considering .nav is defined somewhere
           window.onload=function(){
-            console.log("You're pretty good, ever thought of going to the big leagues?".length)
-            var mycounter = 98;
+            var mycounter = 0;
             let box = document.querySelector('.navbar');
             let height = box.clientHeight;
-            let releaseDay = new Date('October 25, 2021 06:24:00');
-            console.log("Future day: " + releaseDay);
-            let deltaTime = releaseDay.getTime() - Date.now();
-            console.log("Difference: " + deltaTime);
-            let calenderp = document.getElementById('timer');
-            setInterval(()=>{calenderp.innerText = timeToDie(releaseDay);},1000);
             const cookiearray = [document.getElementById('cookie1'), document.getElementById('cookie1count'), document.getElementById('cookie2'), document.getElementById('cookie2count'), document.getElementById('cookie3'), document.getElementById('cookie3count')]
             var currentCookieValues = new Map();
-            currentCookieValues.set("Chocolate Chip", 1);
-            currentCookieValues.set("Candy", 1); 
-            currentCookieValues.set("Oatmeal Raisin", 1);
+            currentCookieValues.set("Chocolate Chip", 0);
+            currentCookieValues.set("Candy", 0); 
+            currentCookieValues.set("Oatmeal Raisin", 0);
             var previousCookiesValues = new Map(currentCookieValues);
             fetch('https://robotsbyryan.com/Cookies/topcookies').then(response => response.json()).then(data => 
             {
@@ -335,7 +320,7 @@
               cookiearray[5].innerText = data.rankedcookies.cookie3.count;
             });
             var interpolate = 0;
-            setInterval(()=>{fetch('https://robotsbyryan.com/Cookies/topcookies').then(response => response.json()).then(data => 
+            setInterval(()=>{fetch('Cookies/topcookies').then(response => response.json()).then(data => 
             {
               previousCookiesValues = new Map(currentCookieValues);
               //get values into dictionary
@@ -355,7 +340,7 @@
                 var prev = previousCookiesValues.get(key);
                 var next = value;
                 var result = next + Math.floor((next - prev) * interpolate / 3600);
-		//console.log(Math.floor((next-prev)*interpolate/3600));
+		            //console.log(Math.floor((next-prev)*interpolate/3600));
                 //update
                 for (let i = 0; i<=4; i+=2){
                   if(cookiearray[i].innerText == key){
@@ -363,7 +348,7 @@
                   }
                 }
               }
-		interpolate = (interpolate + 1) % 3600; 
+		          interpolate = (interpolate + 1) % 3600; 
             },1000);
             var countertext = document.getElementById('counter');
             var cookieclass = document.querySelectorAll('.cookie');
@@ -373,8 +358,6 @@
             let cheight = cookienotice.clientHeight;
             cookienotice.style.left = "calc(" + "50vw - " + (cwidth/2).toString() + "px)"; 
             cookienotice.style.top = "-" + cheight.toString() + "px";
-            console.log(cwidth/2);
-            console.log(cookienotice.style.left);
             cookiespan.innerText = document.cookie;
             cookieclass.forEach(function(el, i){
               el.addEventListener('click', ()=>{[mycounter,countertext] = updateCookieCount(mycounter,countertext);});
