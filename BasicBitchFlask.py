@@ -24,8 +24,31 @@ def display_cookies():
 def return_file(subpath):
 	#return "COOKIE PLZ"
 	#return send_file('static/Cookies/cookie300.png')
-	print(escape(subpath))
 	return send_from_directory('static/Cookies', escape(subpath))
+
+'''@app.route('/Cookies/cookiechoice/', methods=['POST'])
+def submit_cookie_choice():
+	if "cookie" in request.headers:
+		if "cookiechoice" in request.headers['cookie']:
+			if request.cookies.get('cookiechoice') in ["Chocolate_Chip", "Candy", "Oatmeal_Raisin"]:
+  	            		cursor.execute("UPDATE CookieSheet SET current_votes = current_votes + 1 WHERE species = ?", [request.cookies.get('cookiechoice')])
+				//cursor.commit()
+				//response = make_response()
+				cursor.commit()
+				response = make_response()
+				response.status_code = 200
+				return response
+'''
+@app.route('/Cookies/cookiechoice/', methods=['POST'])
+def submit_cookie_choice():
+        if "cookie" in request.headers:
+                if "cookiechoice" in request.headers['cookie']:
+                        if request.cookies.get('cookiechoice') in ["Chocolate_Chip", "Candy", "Oatmeal_Raisin"]:
+                                cursor.execute("UPDATE CookieSheet SET current_votes = current_votes + 1 WHERE species = ?", [request.cookies.get('cookiechoice')])
+                                connection.commit()                                                                                                                                                                                                                                         
+                                response = make_response()                                                                                                                                                                                                                                    
+                                response.status_code = 200
+                                return response
 
 @app.route('/Cookies/cookiechoice/<string:cookiechoice>', methods=['POST'])
 def update_baking_sheet(cookiechoice):
