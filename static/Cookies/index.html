@@ -147,36 +147,36 @@
             </blockquote>
           </div>
 
-          <div class="row justify-content-center py-3">
-            <div class="col-sm-12">
-              <div class="card border-info mb-3 text-dark bg-light text-center"> <!--style="max-width: 18rem;"-->
+          <div class="row text-center justify-content-center">
+            <div class="col-12">
+              <div class="card border-info mb-3 text-dark bg-light"> <!--style="max-width: 18rem;"-->
                 <div class="card-body">
                   <div class="card-title">What should I bake? You only get to choose once!</div>
-                  <div class="container d-flex flex-row justify-content-evenly pt-3">
-                    <div class="card border-info mb-3 text-dark bg-light text-center">
+                  <div class="container d-flex flex-row justify-content-center">
+                    <div class="card border-info text-dark bg-light text-center">
                       <div class="card-body">
-                        <h5 class="card-title">
-                          <button id="cookie1" type="button" class="btn btn-info" onclick='actuallyVote(document.getElementById("cookie1").innerText.replace(" ", "_"))'></button>
+                        <h5 class="card-title ">
+                          <button id="cookie1" type="button" class="btn btn-info" onclick='actuallyVote(document.getElementById("cookie1").innerText.replace(" ", "_"))'>Candy ______</button>
                         </h5>
                         <p class="card-text">
                           Count: <span id="cookie1count"></span>
                         </p>
                       </div>
                     </div>
-                    <div class="card border-info mb-3 text-dark bg-light text-center">
+                    <div class="card border-info text-dark bg-light text-center">
                       <div class="card-body">
                         <h5 class="card-title">
-                          <button id="cookie2" type="button" class="btn btn-info" onclick='actuallyVote(document.getElementById("cookie2").innerText.replace(" ", "_"))'></button> 
+                          <button id="cookie2" type="button" class="btn btn-info" onclick='actuallyVote(document.getElementById("cookie2").innerText.replace(" ", "_"))'>Chocolate Chip</button> 
                         </h5>
                         <p class="card-text">
                           Count: <span id="cookie2count"></span>
                         </p>
                       </div>
                     </div>
-                    <div class="card border-info mb-3 text-dark bg-light text-center">
+                    <div class="card border-info text-dark bg-light text-center">
                       <div class="card-body">
                         <h5 class="card-title">
-                          <button id="cookie3" type="button" class="btn btn-info" onclick='actuallyVote(document.getElementById("cookie3").innerText.replace(" ", "_"))'></button>
+                          <button id="cookie3" type="button" class="btn btn-info" onclick='actuallyVote(document.getElementById("cookie3").innerText.replace(" ", "_"))'>Oatmeal Raisin</button>
                         </h5>
                         <p class="card-text">
                           Count: <span id="cookie3count"></span>
@@ -275,10 +275,12 @@
             darkToggle.classList.toggle('btn-light');
             if(darkToggle.innerText == "🌑"){
               console.log("MOON FOUND!");
-              darkToggle.innerText = "☀️"
+              darkToggle.innerText = "☀️";
+              localStorage.setItem('darkmode', 'enabled');
             } else if (darkToggle.innerText == "☀️"){
               console.log("SUN FOUND!");
-              darkToggle.innerText = "🌑"
+              darkToggle.innerText = "🌑";
+              localStorage.setItem('darkmode', 'disabled');
             }
             var swappable = document.querySelectorAll(".bg-light, .border-primary, .border-info, .bg-dark, .navbar-light, .navbar-dark, .bg-info, .bg-primary, .text-dark, .text-light, .link-primary, .link-info, .btn-info, .btn-primary");
               swappable.forEach(function(el, i){
@@ -295,8 +297,18 @@
           //As soon as the window loads, time to hook in a bunch of listeners and set some display values. 
           //Some of the element setting stuff can probably be pure css considering .nav is defined somewhere
           var currentCookieValues = new Map();
+
+          
+
           window.onload=function(){
-            var mycounter = 0;
+            if (localStorage.getItem('darkmode') == 'enabled'){
+              darkmode()
+            }
+            if(localStorage.getItem('clickcount')){
+              var mycounter = localStorage.getItem('clickcount');
+            }else{
+              var mycounter = 0;
+            }
             let box = document.querySelector('.navbar');
             let height = box.clientHeight;
             const cookiearray = [document.getElementById('cookie1'), document.getElementById('cookie1count'), document.getElementById('cookie2'), document.getElementById('cookie2count'), document.getElementById('cookie3'), document.getElementById('cookie3count')]
@@ -349,6 +361,10 @@
 		          interpolate = (interpolate + 1) % 3600; 
             },1000);
             var countertext = document.getElementById('counter');
+            if(localStorage.getItem('clickcount')){
+              countertext.innerHTML = "Cookies clicked: " + localStorage.getItem('clickcount').toString();
+              console.log("found stuff");
+            }
             var cookieclass = document.querySelectorAll('.cookie');
             var cookiespan = document.getElementById('cookieid');
             let cookienotice = document.querySelector('.cookieclicker');
@@ -377,9 +393,15 @@
           element.addEventListener('dragstart', ()=>{
             [mycounter,countertext] = updateCookieCount(mycounter,countertext);
           });
+
           console.log('ayylmao');
-          
+
+          window.addEventListener("beforeunload", function(event) { 
+            localStorage.setItem('clickcount', mycounter);
+            return null; 
+          });
         };
+        
         </script>
     </body>
 </html>
