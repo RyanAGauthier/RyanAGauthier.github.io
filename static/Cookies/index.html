@@ -172,7 +172,7 @@
                     <div class="card border-info mb-3 text-dark bg-light text-center">
                       <div class="card-body ">
                         <h5 class="card-title">
-                          <span id="cookie3" type="button" class="btn btn-info" onclick='actuallyVote("Candy")'></button>
+                          <span id="cookie3" type="button" class="btn btn-info" onclick='actuallyVote("Chocolate_Chip")'></button>
                         </h5>
                         <p class="card-text">
                           Count: <span id="cookie3count"></span>
@@ -215,7 +215,7 @@
 
           function actuallyVote(cookiechoice){
             try{
-              document.cookie = 'cookiechoice=${cookiechoice}';
+              document.cookie = 'cookiechoice=' + cookiechoice;
               fetch("Cookies/cookiechoice/",{
                 method: 'POST',
                 credentials: 'include',
