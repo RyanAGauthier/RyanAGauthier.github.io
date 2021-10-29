@@ -214,16 +214,23 @@
           }
 
           function actuallyVote(cookiechoice){
-            fetch("Cookies/cookiechoice/",{
-              method: 'POST',
-              headers: {
-                'cookie': 'cookiechoice=${cookiechoice}'
-              }
-            }).then(response=>{
-              if (response.status == 200){
-                alert('Cookie choice of ${cookiechoice} submitted!')
-                }
-              });
+            try{
+              document.cookie = 'cookiechoice=${cookiechoice}';
+              fetch("Cookies/cookiechoice/",{
+                method: 'POST',
+                credentials: 'include',
+                /*headers: {
+                  'cookie': 'cookiechoice=${cookiechoice}'
+                }*/}).then(response=>{
+                if (response.status == 200){
+                  alert('Cookie choice of ${cookiechoice} submitted!')
+                  }
+                else{alert('Cookie choice failed')}
+                })
+            }
+            catch(err){
+              console.log('Something messed up')
+            }
           }
 
           function selectCookieFlavor(flavor){
