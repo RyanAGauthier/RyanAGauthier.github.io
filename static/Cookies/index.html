@@ -155,7 +155,9 @@
                   <div class="container d-flex flex-row justify-content-evenly pt-3">
                     <div class="card border-info mb-3 text-dark bg-light text-center">
                       <div class="card-body ">
-                        <h5 class="card-title"><span id="cookie1"></span></h5>
+                        <h5 class="card-title">
+                          <span id="cookie1" type="button" class="btn btn-info" onclick='actuallyVote(document.getElementById("cookie1").innerText)'></button>
+                        </h5>
                         <p class="card-text">
                           Count: <span id="cookie1count"></span>
                         </p>
@@ -163,7 +165,9 @@
                     </div>
                     <div class="card border-info mb-3 text-dark bg-light text-center">
                       <div class="card-body ">
-                        <h5 class="card-title"><span id="cookie2"></span></h5>
+                        <h5 class="card-title">
+                          <span id="cookie2" type="button" class="btn btn-info" onclick='actuallyVote(document.getElementById("cookie2").innerText)'></button> 
+                        </h5>
                         <p class="card-text">
                           Count: <span id="cookie2count"></span>
                         </p>
@@ -172,7 +176,7 @@
                     <div class="card border-info mb-3 text-dark bg-light text-center">
                       <div class="card-body ">
                         <h5 class="card-title">
-                          <span id="cookie3" type="button" class="btn btn-info" onclick='actuallyVote("Chocolate_Chip")'></button>
+                          <span id="cookie3" type="button" class="btn btn-info" onclick='actuallyVote(document.getElementById("cookie3").innerText)'></button>
                         </h5>
                         <p class="card-text">
                           Count: <span id="cookie3count"></span>
