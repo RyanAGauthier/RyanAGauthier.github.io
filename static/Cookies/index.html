@@ -151,7 +151,7 @@
             <div class="col-sm-12">
               <div class="card border-info mb-3 text-dark bg-light text-center"> <!--style="max-width: 18rem;"-->
                 <div class="card-body">
-                  <div class=card-title">ayy lmao</div>
+                  <div class="card-title">What should I bake? You only get to choose once!</div>
                   <div class="container d-flex flex-row justify-content-evenly pt-3">
                     <div class="card border-info mb-3 text-dark bg-light text-center">
                       <div class="card-body">
@@ -228,11 +228,11 @@
                         currentCookieValues.set(data.rankedcookies.cookie3.name.replace(/_/g, ' '), data.rankedcookies.cookie3.count)
                       }).catch(error=>console.error(error));
                     }
-                  else{alert('Cookie choice failed')}
-                  }).catch(err=>{
-                console.log('Something messed up')
-              });
+                  else{alert('Cookie choice failed')}})
+              }
             }
+            catch(err){
+                console.log('Something messed up')
           }
 
           function selectCookieFlavor(flavor){
