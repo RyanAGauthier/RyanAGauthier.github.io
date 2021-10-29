@@ -233,6 +233,7 @@
             }
             catch(err){
                 console.log('Something messed up')
+            }
           }
 
           function selectCookieFlavor(flavor){
@@ -306,9 +307,9 @@
             fetch('https://robotsbyryan.com/Cookies/topcookies').then(response => response.json()).then(data => 
             {
               //get values into dictionary
-              currentCookieValues.set(data.rankedcookies.cookie1.name.replace(/_/g, ' '), data.rankedcookies.cookie1.count)
-              currentCookieValues.set(data.rankedcookies.cookie2.name.replace(/_/g, ' '), data.rankedcookies.cookie2.count)
-              currentCookieValues.set(data.rankedcookies.cookie3.name.replace(/_/g, ' '), data.rankedcookies.cookie3.count)
+              currentCookieValues.set(data.rankedcookies.cookie1.name.replace(/_/g, ' '), data.rankedcookies.cookie1.count);
+              currentCookieValues.set(data.rankedcookies.cookie2.name.replace(/_/g, ' '), data.rankedcookies.cookie2.count);
+              currentCookieValues.set(data.rankedcookies.cookie3.name.replace(/_/g, ' '), data.rankedcookies.cookie3.count);
               cookiearray[0].innerText = data.rankedcookies.cookie1.name.replace(/_/g, ' ');
               cookiearray[1].innerText = data.rankedcookies.cookie1.count;
               cookiearray[2].innerText = data.rankedcookies.cookie2.name.replace(/_/g, ' ');
@@ -321,9 +322,9 @@
             {
               previousCookiesValues = new Map(currentCookieValues);
               //get values into dictionary
-              currentCookieValues.set(data.rankedcookies.cookie1.name.replace(/_/g, ' '), data.rankedcookies.cookie1.count)
-              currentCookieValues.set(data.rankedcookies.cookie2.name.replace(/_/g, ' '), data.rankedcookies.cookie2.count)
-              currentCookieValues.set(data.rankedcookies.cookie3.name.replace(/_/g, ' '), data.rankedcookies.cookie3.count)
+              currentCookieValues.set(data.rankedcookies.cookie1.name.replace(/_/g, ' '), data.rankedcookies.cookie1.count);
+              currentCookieValues.set(data.rankedcookies.cookie2.name.replace(/_/g, ' '), data.rankedcookies.cookie2.count);
+              currentCookieValues.set(data.rankedcookies.cookie3.name.replace(/_/g, ' '), data.rankedcookies.cookie3.count);
               /*cookiearray[0].innerText = data.rankedcookies.cookie1.name.replace(/_/g, ' ');
               cookiearray[1].innerText = data.rankedcookies.cookie1.count;
               cookiearray[2].innerText = data.rankedcookies.cookie2.name.replace(/_/g, ' ');
