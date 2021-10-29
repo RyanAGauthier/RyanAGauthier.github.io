@@ -295,13 +295,13 @@
               });
           };
           //As soon as the window loads, time to hook in a bunch of listeners and set some display values. 
-          //Some of the element setting stuf can probably be pure css considering .nav is defined somewhere
+          //Some of the element setting stuff can probably be pure css considering .nav is defined somewhere
+          var currentCookieValues = new Map();
           window.onload=function(){
             var mycounter = 0;
             let box = document.querySelector('.navbar');
             let height = box.clientHeight;
             const cookiearray = [document.getElementById('cookie1'), document.getElementById('cookie1count'), document.getElementById('cookie2'), document.getElementById('cookie2count'), document.getElementById('cookie3'), document.getElementById('cookie3count')]
-            var currentCookieValues = new Map();
             currentCookieValues.set("Chocolate Chip", 0);
             currentCookieValues.set("Candy", 0); 
             currentCookieValues.set("Oatmeal Raisin", 0);
