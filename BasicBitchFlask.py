@@ -14,11 +14,23 @@ cursor.execute("CREATE TABLE IF NOT EXISTS CookieSheet (species TEXT NOT NULL PR
 
 @app.route("/")
 def hello_world():
-	return send_from_directory('static/Cookies', 'index.html')
+	return send_from_directory('static/', 'index.html')
+
+@app.route("/Cookies/")
+def cookies():
+	return send_from_directory('static/Cookies', 'index.html');
 
 @app.route("/cookies")
 def display_cookies():
 	return "Delicious cookies here soon!"
+
+@app.route("/assets/<path:subpath>")
+def return_assets(subpath):
+	return send_from_directory('static/assets', escape(subpath))
+
+#@app.route("/images/<path:subpath>")
+#def temp_return_images(subpath):
+#	pass
 
 @app.route("/Cookies/<path:subpath>")
 def return_file(subpath):
@@ -26,29 +38,18 @@ def return_file(subpath):
 	#return send_file('static/Cookies/cookie300.png')
 	return send_from_directory('static/Cookies', escape(subpath))
 
-'''@app.route('/Cookies/cookiechoice/', methods=['POST'])
-def submit_cookie_choice():
-	if "cookie" in request.headers:
-		if "cookiechoice" in request.headers['cookie']:
-			if request.cookies.get('cookiechoice') in ["Chocolate_Chip", "Candy", "Oatmeal_Raisin"]:
-  	            		cursor.execute("UPDATE CookieSheet SET current_votes = current_votes + 1 WHERE species = ?", [request.cookies.get('cookiechoice')])
-				//cursor.commit()
-				//response = make_response()
-				cursor.commit()
-				response = make_response()
-				response.status_code = 200
-				return response
-'''
 @app.route('/Cookies/cookiechoice/', methods=['POST'])
 def submit_cookie_choice():
         if "cookie" in request.headers:
                 if "cookiechoice" in request.headers['cookie']:
                         if request.cookies.get('cookiechoice') in ["Chocolate_Chip", "Candy", "Oatmeal_Raisin"]:
                                 cursor.execute("UPDATE CookieSheet SET current_votes = current_votes + 1 WHERE species = ?", [request.cookies.get('cookiechoice')])
-                                connection.commit()                                                                                                                                                                                                                                         
-                                response = make_response()                                                                                                                                                                                                                                    
+                                connection.commit()                                                                                                                                                                                                
+                                response = make_response()                                                                                                                                                                                         
                                 response.status_code = 200
                                 return response
+        return make_response('failed', 400)
+
 
 @app.route('/Cookies/cookiechoice/<string:cookiechoice>', methods=['POST'])
 def update_baking_sheet(cookiechoice):
@@ -62,6 +63,8 @@ def update_baking_sheet(cookiechoice):
 
 @app.route("/Cookies/topcookies")
 def current_favorites():
+	#print("Forwarded IPS: " + request.headers['X-Forwarded-For'])
+	#print("Connecting IPS: " + request.headers['CF-Connecting-IP'])
 	c = cursor.execute("Select species, current_votes FROM CookieSheet ORDER BY current_votes DESC").fetchall()
 	_cookie1 = c[0][0]
 	_cookie1count = c[0][1]

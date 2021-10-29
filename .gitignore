@@ -10,3 +10,5 @@
 !static/
 !static/Cookies/
 !static/Cookies/index.html
+!static/assets/*
+!static/index.html
