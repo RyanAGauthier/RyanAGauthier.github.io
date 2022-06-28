@@ -74,3 +74,6 @@ def current_favorites():
 	_cookie3count = c[2][1]
 	bigdict = {"cookie1":{"name":_cookie1,"count":_cookie1count},"cookie2":{"name":_cookie2,"count":_cookie2count},"cookie3":{"name":_cookie3,"count":_cookie3count}}
 	return make_response(jsonify(rankedcookies=bigdict), 200)
+
+if __name__ == "__main__":
+    app.run()
