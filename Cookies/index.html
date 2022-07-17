@@ -175,7 +175,7 @@
           }
 
           function selectCookieFlavor(flavor){
-            document.cookie="flavor=" + flavor;
+            document.cookie="flavor=" + flavor +";max-age=31536000";
             var cookiespan = document.getElementById('cookieid');
             cookiespan.innerText = document.cookie;
           }
