@@ -142,7 +142,8 @@
 
           <div class="row justify-content-sm-center text-center">
             <blockquote class="blockquote">
-              <h1 class="display-3 text-wrap">Something Sweeter is on the Way<br>Check back in <span id="timer"></span></h1>
+              <h1 class="display-3 text-wrap">Due to unforeseen circumstances, "Something Sweeter" has been delayed. <br>Check back in <span id="timer"></span></h1>
+              <h3 class="text-wrap">In the meantime, why not try <a class ="link-info"href="https://www.allrecipes.com/recipes/362/desserts/cookies/">baking something yourself?</a></h1>
             </blockquote>
           </div>
 
@@ -170,7 +171,7 @@
             let hours = Math.floor((deltaT-(days*1000*60*60*24))/(1000*60*60));
             let minutes = Math.floor((deltaT-(3600000*(24*days+hours)))/(1000*60));
             let seconds = Math.floor((deltaT - (60000*(days*60*24+60*hours+minutes)))/1000);
-            console.log(String(days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds"));
+            //console.log(String(days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds"));
             return String(days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds");
           }
 
@@ -186,15 +187,6 @@
               var cookiespan = document.getElementById('cookieid');
               cookiespan.innerText = document.cookie;
             }
-          }
-
-          function bruh(deltaT){
-            let days = Math.floor(deltaT/(1000*60*60*24));
-            let hours = Math.floor((deltaT-(days*1000*60*60*24))/(1000*60*60));
-            let minutes = Math.floor((deltaT-(3600000*(24*days+hours)))/(1000*60));
-            let seconds = Math.floor((deltaT - (60000*(days*60*24+60*hours+minutes)))/1000);
-            console.log(String(days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds"));
-            return 1;
           }
 
           function updateCookieCount(count, el){
@@ -238,14 +230,14 @@
           //As soon as the window loads, time to hook in a bunch of listeners and set some display values. 
           //Some of the element setting stuf can probably be pure css considering .nav is defined somewhere
           window.onload=function(){
-            console.log("You're pretty good, ever thought of going to the big leagues?".length)
-            var mycounter = 98;
+            //console.log("You're pretty good, ever thought of going to the big leagues?".length)
+            var mycounter = 0;
             let box = document.querySelector('.navbar');
             let height = box.clientHeight;
-            let releaseDay = new Date('August 1, 2022 00:00:00');
-            console.log("Future day: " + releaseDay);
+            let releaseDay = new Date('August 15, 2022 00:00:00');
+            //console.log("Future day: " + releaseDay);
             let deltaTime = releaseDay.getTime() - Date.now();
-            console.log("Difference: " + deltaTime);
+            //console.log("Difference: " + deltaTime);
             let calenderp = document.getElementById('timer');
             setInterval(()=>{calenderp.innerText = timeToDie(releaseDay);},1000);
             var countertext = document.getElementById('counter');
@@ -256,8 +248,8 @@
             let cheight = cookienotice.clientHeight;
             cookienotice.style.left = "calc(" + "50vw - " + (cwidth/2).toString() + "px)"; 
             cookienotice.style.top = "-" + cheight.toString() + "px";
-            console.log(cwidth/2);
-            console.log(cookienotice.style.left);
+            //console.log(cwidth/2);
+            //console.log(cookienotice.style.left);
             cookiespan.innerText = document.cookie;
             cookieclass.forEach(function(el, i){
               el.addEventListener('click', ()=>{[mycounter,countertext] = updateCookieCount(mycounter,countertext);});
@@ -279,7 +271,7 @@
           element.addEventListener('dragstart', ()=>{
             [mycounter,countertext] = updateCookieCount(mycounter,countertext);
           });
-          console.log('ayylmao');
+          //console.log('ayylmao');
           
         };
         </script>
