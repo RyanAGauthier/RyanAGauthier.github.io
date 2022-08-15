@@ -206,6 +206,12 @@
           //Implements darkmode by simply toggling a bunch of classes after finding all elements with them
           function darkmode(){
             var darkToggle = document.getElementById('darkmodeswitch');
+            let tempModePref = localStorage.getItem("modePref");
+            if(tempModePref == "Dark"){
+              localStorage.setItem("modePref", "Light");
+            }else if (tempModePref == "Light"){
+              localStorage.setItem("modePref", "Dark");
+            }
             darkToggle.classList.toggle('btn-dark'); 
             darkToggle.classList.toggle('btn-light');
             if(darkToggle.innerText == "🌑"){
@@ -234,7 +240,7 @@
             var mycounter = 0;
             let box = document.querySelector('.navbar');
             let height = box.clientHeight;
-            let releaseDay = new Date('August 15, 2022 00:00:00');
+            let releaseDay = new Date('August 15, 2022 17:00:00');
             //console.log("Future day: " + releaseDay);
             let deltaTime = releaseDay.getTime() - Date.now();
             //console.log("Difference: " + deltaTime);
@@ -271,6 +277,14 @@
           element.addEventListener('dragstart', ()=>{
             [mycounter,countertext] = updateCookieCount(mycounter,countertext);
           });
+          var darkmodePref = localStorage.getItem("modePref");
+          if(darkmodePref == "Dark"){
+            localStorage.setItem("modePref", "Light");
+            darkmode();
+          }
+          else{
+            localStorage.setItem("modePref", "Light");
+          };
           //console.log('ayylmao');
           
         };
