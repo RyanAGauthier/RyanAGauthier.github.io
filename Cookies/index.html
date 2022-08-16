@@ -140,10 +140,38 @@
             </div>
           </div>
 
+          <div class="row my-3 align-items-center">
+            <div class="col-sm-6">
+              <div class="card h-100 bg-info text-dark border-primary">
+                  <div class="card-body">
+                      <h5 class="card-title display-5">Update I!</h5>
+                      <p class="card-text lead">The electromechanical stage of the project formally begins in earnest. I've finally gotten around to modeling a bunch of the components involved. The current mock-up of how I'll be automating the toaster is adjacent. 
+                        <br><br>Currently this'll use up three steppers, but both the cookie dough cut-and-allocator and tray handling system will each likely need an additional one. These will be controlled through whatever driver circuits I have on hand communicating with the Raspberry Pi that's exchanging messages both with the Twitch stream and the website. 
+                        <br><br>The next stage will be to 3D print the motor housings, model the fridge, and start testing the initial movements. From there I'll be designing the cutting mechanism, the tray handling mechanism, and then the power board. Check the bottom of the page for an expected update timing!
+                  </div>
+                </div>
+              </div>
+            <div class="col-sm-4 offset-sm-2 px-0">
+              <img src="AutomatedToasterMockUp.png" class="img-fluid rounded-end mx-auto d-block g-0" alt="Toaster Mock-Up">
+            </div>
+          </div>
+
+          <div class="row align-items-center">
+            <div class="col-sm-4">
+              <img src="ToasterOven.jpg" class="img-fluid rounded-end mx-auto d-block" style="max-height: 300px;">
+            </div>
+            <div class="col-sm-4">
+              <img src="FridgeInUse.jpg" class="img-fluid rounded-end mx-auto d-block" style="max-height: 300px;">
+            </div>
+            <div class="col-sm-4">
+              <img src="Components.png" class="img-fluid rounded-end mx-auto d-block">
+            </div>
+          </div>
+
           <div class="row justify-content-sm-center text-center">
             <blockquote class="blockquote">
-              <h1 class="display-3 text-wrap">Due to unforeseen circumstances, "Something Sweeter" has been delayed. <br>Check back in <span id="timer"></span></h1>
-              <h3 class="text-wrap">In the meantime, why not try <a class ="link-info"href="https://www.allrecipes.com/recipes/362/desserts/cookies/">baking something yourself?</a></h1>
+              <h1 class="display-3 text-wrap"><br>Check back in <span id="timer"></span></h1>
+              <h3 class="text-wrap">In the meantime, why not try <a class ="link-info"href="https://www.allrecipes.com/recipes/362/desserts/cookies/">baking something yourself?</a></h3>
             </blockquote>
           </div>
 
@@ -240,7 +268,7 @@
             var mycounter = 0;
             let box = document.querySelector('.navbar');
             let height = box.clientHeight;
-            let releaseDay = new Date('August 15, 2022 17:00:00');
+            let releaseDay = new Date('August 29, 2022 17:00:00');
             //console.log("Future day: " + releaseDay);
             let deltaTime = releaseDay.getTime() - Date.now();
             //console.log("Difference: " + deltaTime);
