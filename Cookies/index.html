@@ -268,7 +268,7 @@
             var mycounter = 0;
             let box = document.querySelector('.navbar');
             let height = box.clientHeight;
-            let releaseDay = new Date('September 12, 2022 20:00:00');
+            let releaseDay = new Date('September 19, 2022 20:00:00');
             //console.log("Future day: " + releaseDay);
             let deltaTime = releaseDay.getTime() - Date.now();
             //console.log("Difference: " + deltaTime);
@@ -288,7 +288,9 @@
             cookieclass.forEach(function(el, i){
               el.addEventListener('click', ()=>{[mycounter,countertext] = updateCookieCount(mycounter,countertext);});
             });
-
+            if(localStorage.getItem("clickcount")){
+              [mycounter,countertext] = updateCookieCount(parseInt(localStorage.getItem("clickcount"))-1,countertext);
+            }
             var element = document.getElementById('switch');
             element.addEventListener('click', event => {
               console.log('hello');
@@ -300,22 +302,25 @@
               console.log('Height of nav is now ' + document.body.style.paddingBottom);
               cookienotice.style.left = "calc(" + "50vw - " + (cwidth/2).toString() + "px)"; 
               cookiespan.innerText = document.cookie;
-          });
+            });
 
-          element.addEventListener('dragstart', ()=>{
-            [mycounter,countertext] = updateCookieCount(mycounter,countertext);
-          });
-          var darkmodePref = localStorage.getItem("modePref");
-          if(darkmodePref == "Dark"){
-            localStorage.setItem("modePref", "Light");
-            darkmode();
+            element.addEventListener('dragstart', ()=>{
+              [mycounter,countertext] = updateCookieCount(mycounter,countertext);
+            });
+            var darkmodePref = localStorage.getItem("modePref");
+            if(darkmodePref == "Dark"){
+              localStorage.setItem("modePref", "Light");
+              darkmode();
+            }
+            else{
+              localStorage.setItem("modePref", "Light");
+            }
+            //console.log('ayylmao');
+            window.addEventListener("beforeunload", function(event){ 
+              localStorage.setItem('clickcount', mycounter);
+              return null; 
+            });
           }
-          else{
-            localStorage.setItem("modePref", "Light");
-          };
-          //console.log('ayylmao');
-          
-        };
         </script>
     </body>
 </html>
