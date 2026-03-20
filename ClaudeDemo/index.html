@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maki Machines — Session Summary</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #16213e;
+      --accent-red: #e94560;
+      --accent-blue: #0f3460;
+      --accent-green: #53d769;
+      --card-surface: #1e2a4a;
+    }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body { background: var(--bg-primary); color: #f0f0f0; }
+
+    /* Navbar */
+    .navbar-custom { background: rgba(26,26,46,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(233,69,96,0.2); }
+    .navbar-custom .nav-link.active, .navbar-custom .nav-link:hover { color: var(--accent-red) !important; }
+    #scrollProgress { position: fixed; top: 56px; left: 0; height: 3px; background: var(--accent-red); z-index: 1031; transition: width 0.1s; width: 0%; }
+
+    /* Hero */
+    .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(rgba(26,26,46,0.88), rgba(22,33,62,0.95)),
+        url('https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=1920&q=80') center/cover no-repeat;
+    }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; }
+    .hero .lead { font-size: clamp(1rem, 2.5vw, 1.3rem); color: #a0a0b0; }
+
+    /* Sections */
+    .section-dark { background: var(--bg-primary); }
+    .section-light { background: var(--bg-secondary); }
+    section { padding: 5rem 0; }
+    .section-heading { font-weight: 700; margin-bottom: 2rem; }
+    .section-heading i { color: var(--accent-red); margin-right: 0.5rem; }
+
+    /* Cards */
+    .card-custom { background: var(--card-surface); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; transition: transform 0.2s, box-shadow 0.2s; }
+    .card-custom:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+    .card-custom .card-header { background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .accent-left-red { border-left: 4px solid var(--accent-red); }
+    .accent-left-green { border-left: 4px solid var(--accent-green); }
+    .accent-left-blue { border-left: 4px solid var(--accent-blue); }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--accent-red); }
+    .timeline-item { position: relative; margin-bottom: 1.5rem; }
+    .timeline-item::before { content: ''; position: absolute; left: -1.65rem; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-red); border: 2px solid var(--bg-primary); }
+
+    /* Fade-in */
+    .fade-section { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-section.visible { opacity: 1; transform: translateY(0); }
+
+    /* Back to top */
+    #backToTop { position: fixed; bottom: 2rem; right: 2rem; z-index: 1040; opacity: 0; transition: opacity 0.3s; pointer-events: none; width: 48px; height: 48px; border-radius: 50%; background: var(--accent-red); border: none; color: #fff; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; }
+    #backToTop.show { opacity: 1; pointer-events: auto; }
+
+    /* Comparison table */
+    .table-custom th { background: var(--accent-blue); color: #f0f0f0; }
+
+    /* Image cards */
+    .img-section { border-radius: 12px; object-fit: cover; width: 100%; }
+
+    /* Accordion custom */
+    .accordion-button:not(.collapsed) { background: rgba(233,69,96,0.15); color: #f0f0f0; }
+    .accordion-button { background: var(--card-surface); color: #f0f0f0; }
+    .accordion-button::after { filter: invert(1); }
+    .accordion-body { background: var(--bg-secondary); }
+
+    /* Tabs */
+    .nav-tabs .nav-link { color: #a0a0b0; }
+    .nav-tabs .nav-link.active { color: var(--accent-red); background: var(--card-surface); border-color: rgba(255,255,255,0.1) rgba(255,255,255,0.1) var(--card-surface); }
+    .nav-pills .nav-link.active { background: var(--accent-red); }
+
+    /* Badges */
+    .badge-defense { background: #dc3545; }
+    .badge-consumer { background: #0d6efd; }
+    .badge-logistics { background: #6f42c1; }
+    .badge-delivery { background: #20c997; }
+    .badge-drone { background: #fd7e14; }
+
+    /* Stock images */
+    .stock-img { border-radius: 12px; object-fit: cover; }
+
+    @media (max-width: 767px) {
+      section { padding: 3rem 0; }
+      .hero { min-height: 90vh; }
+    }
+  </style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="80" tabindex="0">
+
+  <!-- Scroll Progress -->
+  <div id="scrollProgress"></div>
+
+  <!-- Navbar -->
+  <nav id="mainNav" class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#hero"><i class="bi bi-gear-wide-connected text-danger"></i> Maki Machines</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navCollapse" aria-controls="navCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navCollapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#jobsearch">Job Search</a></li>
+          <li class="nav-item"><a class="nav-link" href="#makimachines">Maki Machines</a></li>
+          <li class="nav-item"><a class="nav-link" href="#factory">Factory Research</a></li>
+          <li class="nav-item"><a class="nav-link" href="#cooling">Cooling Tech</a></li>
+          <li class="nav-item"><a class="nav-link" href="#barriers">Barriers</a></li>
+          <li class="nav-item"><a class="nav-link" href="#appendix">Appendix</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero" class="hero text-center">
+    <div class="container">
+      <h1 class="mb-3">Career Direction, Maki Machines <br class="d-none d-md-block">& Sushi Manufacturing Research</h1>
+      <p class="lead mb-4">Ryan Gauthier &mdash; Mechanical Engineering &bull; Computer Science &bull; Robotics</p>
+      <div class="d-flex justify-content-center flex-wrap gap-3">
+        <a href="#portfolio" class="btn btn-danger btn-lg px-4 py-2" role="button"><i class="bi bi-arrow-down-circle me-1"></i> Explore</a>
+        <a href="#appendix" class="btn btn-outline-light btn-lg px-4 py-2" role="button"><i class="bi bi-journal-bookmark me-1"></i> Appendix</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 1: Portfolio & Education -->
+  <section id="portfolio" class="section-light">
+    <div class="container fade-section">
+      <h2 class="section-heading"><i class="bi bi-person-badge"></i> Portfolio & Education</h2>
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="card card-custom accent-left-red h-100">
+            <div class="card-header fw-semibold"><i class="bi bi-mortarboard"></i> Education Timeline</div>
+            <div class="card-body">
+              <div class="timeline">
+                <div class="timeline-item">
+                  <h6 class="mb-1">BSME — Cal State Fullerton <span class="badge bg-secondary">May 2020</span></h6>
+                  <p class="text-secondary small mb-0">Minor in Computer Science. Coursework: control systems, mechatronics, dynamics, kinematics, CAD, embedded systems.</p>
+                </div>
+                <div class="timeline-item">
+                  <h6 class="mb-1">MSCS — Cal State Fullerton <span class="badge bg-secondary">Dec 2024</span></h6>
+                  <p class="text-secondary small mb-0">3.97 GPA. Graduate coursework: artificial neural networks, expert systems, machine learning.</p>
+                </div>
+                <div class="timeline-item">
+                  <h6 class="mb-1">Titan Rover Design Team <span class="badge bg-danger">3 Years</span></h6>
+                  <p class="text-secondary small mb-0">3-DOF excavating arm, Wi-Fi button presser (ESP32), rotating antenna mast (Arduino/stepper motors).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80" alt="Robotics" class="stock-img w-100 mb-3" style="height:200px;">
+          <div class="card card-custom accent-left-green h-100">
+            <div class="card-header fw-semibold"><i class="bi bi-tools"></i> Key Skills & Domains</div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush" style="background:transparent;">
+                <li class="list-group-item bg-transparent border-secondary"><i class="bi bi-cpu text-info"></i> Mechanical Engineering & Mechatronics</li>
+                <li class="list-group-item bg-transparent border-secondary"><i class="bi bi-robot text-info"></i> Embedded Systems (ESP32, Arduino)</li>
+                <li class="list-group-item bg-transparent border-secondary"><i class="bi bi-braces text-info"></i> Computer Science & Software Engineering</li>
+                <li class="list-group-item bg-transparent border-secondary"><i class="bi bi-diagram-3 text-info"></i> AI / ML / Neural Networks</li>
+                <li class="list-group-item bg-transparent border-secondary"><i class="bi bi-gear text-info"></i> CAD, Kinematics & Control Systems</li>
+                <li class="list-group-item bg-transparent border-secondary"><i class="bi bi-joystick text-info"></i> Robotics (Rover systems, actuators)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Job Search -->
+  <section id="jobsearch" class="section-dark">
+    <div class="container fade-section">
+      <h2 class="section-heading"><i class="bi bi-search"></i> Job Search Assessment</h2>
+      <p class="text-secondary mb-4">Target robotics companies ranked by fit, excluding border enforcement work. Profile sits at the intersection of mechanical engineering, embedded systems, and AI/ML.</p>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <!-- Saronic -->
+        <div class="col">
+          <div class="card card-custom h-100" data-bs-toggle="tooltip" data-bs-placement="top" title="Strong fit: autonomous vehicles, naval defense, hardware+software integration">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>1. Saronic Technologies</strong> <span class="badge badge-defense">Defense</span>
+            </div>
+            <div class="card-body">
+              <p class="card-text small">Autonomous surface vessels for naval defense. Hardware-software integration role leveraging both ME and CS.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Skydio -->
+        <div class="col">
+          <div class="card card-custom h-100" data-bs-toggle="tooltip" data-bs-placement="top" title="Autonomous drones, computer vision — direct robotics+AI overlap">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>2. Skydio</strong> <span class="badge badge-drone">Drones</span>
+            </div>
+            <div class="card-body">
+              <p class="card-text small">Autonomous drones with advanced computer vision. Strong alignment with AI/ML and embedded systems background.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Amazon Robotics -->
+        <div class="col">
+          <div class="card card-custom h-100" data-bs-toggle="tooltip" data-bs-placement="top" title="No defense work, large-scale warehouse automation">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>3. Amazon Robotics</strong> <span class="badge badge-logistics">Logistics</span>
+            </div>
+            <div class="card-body">
+              <p class="card-text small">Warehouse and logistics automation. No defense work. Massive scale robotics with clear career growth.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Northrop Grumman -->
+        <div class="col">
+          <div class="card card-custom h-100" data-bs-toggle="tooltip" data-bs-placement="top" title="Defense prime — choose programs carefully to align with values">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>4. Northrop Grumman</strong> <span class="badge badge-defense">Defense</span>
+            </div>
+            <div class="card-body">
+              <p class="card-text small">Defense prime contractor with wide portfolio. Select programs carefully for ethical alignment.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Zipline -->
+        <div class="col">
+          <div class="card card-custom h-100" data-bs-toggle="tooltip" data-bs-placement="top" title="Humanitarian drone delivery, commercial+medical applications">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>5. Zipline</strong> <span class="badge badge-delivery">Delivery</span>
+            </div>
+            <div class="card-body">
+              <p class="card-text small">Autonomous drone delivery with humanitarian and commercial focus. Medical supply delivery at scale.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Nuro -->
+        <div class="col">
+          <div class="card card-custom h-100" data-bs-toggle="tooltip" data-bs-placement="top" title="Autonomous delivery vehicles — consumer robotics focus">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>6. Nuro</strong> <span class="badge badge-delivery">Delivery</span>
+            </div>
+            <div class="card-body">
+              <p class="card-text small">Autonomous delivery vehicles for last-mile logistics. Consumer-facing robotics product.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Locus Robotics -->
+        <div class="col">
+          <div class="card card-custom h-100" data-bs-toggle="tooltip" data-bs-placement="top" title="Warehouse automation robots, collaborative robotics">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>7. Locus Robotics</strong> <span class="badge badge-logistics">Logistics</span>
+            </div>
+            <div class="card-body">
+              <p class="card-text small">Warehouse automation with collaborative robots. Growing market in logistics fulfillment.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Shield AI -->
+        <div class="col">
+          <div class="card card-custom h-100" data-bs-toggle="tooltip" data-bs-placement="top" title="Flagged: potential DHS/CBP contract involvement">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>8. Shield AI</strong> <span class="badge badge-defense">Defense <i class="bi bi-exclamation-triangle"></i></span>
+            </div>
+            <div class="card-body">
+              <p class="card-text small">Autonomous systems for defense. <strong class="text-warning">Flagged</strong> for potential DHS/CBP contract involvement.</p>
+            </div>
+          </div>
+        </div>
+        <!-- L3Harris -->
+        <div class="col">
+          <div class="card card-custom h-100" data-bs-toggle="tooltip" data-bs-placement="top" title="Defense prime, very wide portfolio — research specific teams">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>9. L3Harris</strong> <span class="badge badge-defense">Defense</span>
+            </div>
+            <div class="card-body">
+              <p class="card-text small">Defense prime with a wide technology portfolio. Research specific divisions for best fit.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 p-3 rounded" style="background:var(--card-surface);">
+        <p class="mb-0 small"><i class="bi bi-info-circle text-info"></i> <strong>Anduril</strong> was identified as a repeated rejection (4 times). Likely causes: school pedigree filtering (CSUF vs. CMU/MIT/Stanford), limited industry experience, and tech stack gap (ROS2, real-time perception, production C++).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Maki Machines Concept -->
+  <section id="makimachines" class="section-light">
+    <div class="container fade-section">
+      <h2 class="section-heading"><i class="bi bi-lightning-charge"></i> Startup Concept: Maki Machines</h2>
+      <div class="row g-4 mb-4">
+        <div class="col-lg-7">
+          <div class="card card-custom accent-left-red">
+            <div class="card-body">
+              <h5>The Core Insight</h5>
+              <p>Philadelphia rolls cost <strong>$8&ndash;$12</strong> at restaurants, but ingredients (cream cheese, smoked salmon, cucumber, rice, nori) cost roughly <strong>$1.50&ndash;$2.00</strong>. The price is almost entirely labor and skill.</p>
+              <p class="mb-0">The technical problem &mdash; automating the layering, rolling, and cutting of a multi-ingredient sushi roll &mdash; is tractable with combined ME and CS expertise.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?w=800&q=80" alt="Sushi preparation" class="stock-img w-100" style="height:220px;">
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <ul class="nav nav-tabs mb-3" id="makiTabs" role="tablist">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tabProduct" role="tab">The Product</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabMarket" role="tab">The Market</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabPitch" role="tab">The Pitch</a></li>
+      </ul>
+      <div class="tab-content p-3 rounded" style="background:var(--card-surface);">
+        <!-- Product Tab -->
+        <div class="tab-pane fade show active" id="tabProduct" role="tabpanel">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="card card-custom accent-left-blue h-100">
+                <div class="card-header"><i class="bi bi-building"></i> Commercial Model</div>
+                <div class="card-body">
+                  <ul class="list-group list-group-flush" style="background:transparent;">
+                    <li class="list-group-item bg-transparent border-secondary">Designed for restaurant kitchens & grocery delis</li>
+                    <li class="list-group-item bg-transparent border-secondary">High throughput, integrated cooling</li>
+                    <li class="list-group-item bg-transparent border-secondary">NSF-certified, commercial-grade materials</li>
+                    <li class="list-group-item bg-transparent border-secondary">Miniature vapor-compression cooling</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card card-custom accent-left-green h-100">
+                <div class="card-header"><i class="bi bi-house"></i> Home Model</div>
+                <div class="card-body">
+                  <ul class="list-group list-group-flush" style="background:transparent;">
+                    <li class="list-group-item bg-transparent border-secondary">Compact countertop form factor</li>
+                    <li class="list-group-item bg-transparent border-secondary">Target price: under $300</li>
+                    <li class="list-group-item bg-transparent border-secondary">Simple operation, easy to clean</li>
+                    <li class="list-group-item bg-transparent border-secondary">Stirling cooler for premium cooling</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Market Tab -->
+        <div class="tab-pane fade" id="tabMarket" role="tabpanel">
+          <h5 class="mb-3">Market Opportunity</h5>
+          <p>The actual market gap: <strong>nobody has tried to make it cheap</strong>. Suzumo and AUTEC sell at $5K&ndash;$20K to restaurants. A $200&ndash;$300 consumer version hasn't been attempted because Japanese industrial equipment companies aren't interested in consumer products, and consumer appliance companies lack sushi domain expertise.</p>
+          <div class="mb-3">
+            <label class="form-label small">Restaurant Roll Price (labor-driven)</label>
+            <div class="progress" style="height: 24px;">
+              <div class="progress-bar bg-danger" style="width: 85%">$8 &ndash; $12 per roll</div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Actual Ingredient Cost</label>
+            <div class="progress" style="height: 24px;">
+              <div class="progress-bar bg-success" style="width: 18%">$1.50 &ndash; $2.00</div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Price Premium (labor + skill)</label>
+            <div class="progress" style="height: 24px;">
+              <div class="progress-bar bg-warning text-dark" style="width: 75%">~75% of price is labor</div>
+            </div>
+          </div>
+        </div>
+        <!-- Pitch Tab -->
+        <div class="tab-pane fade" id="tabPitch" role="tabpanel">
+          <h5 class="mb-3">Friends &amp; Family Raise: $25,000 &ndash; $50,000</h5>
+          <p>A pitch deck was created targeting an initial raise to fund early prototype development.</p>
+          <table class="table table-dark table-striped">
+            <thead><tr><th>Use of Funds</th><th>Allocation</th></tr></thead>
+            <tbody>
+              <tr><td><i class="bi bi-wrench"></i> Prototype Materials</td><td>40%</td></tr>
+              <tr><td><i class="bi bi-arrow-repeat"></i> Testing & Iteration</td><td>25%</td></tr>
+              <tr><td><i class="bi bi-shield-check"></i> Provisional Patent Filing</td><td>15%</td></tr>
+              <tr><td><i class="bi bi-shop"></i> First Restaurant Pilot</td><td>20%</td></tr>
+            </tbody>
+          </table>
+          <div class="mb-2">
+            <label class="form-label small">Prototype Materials — 40%</label>
+            <div class="progress" style="height:20px;"><div class="progress-bar bg-info" style="width:40%">40%</div></div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label small">Testing & Iteration — 25%</label>
+            <div class="progress" style="height:20px;"><div class="progress-bar bg-primary" style="width:25%">25%</div></div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label small">Provisional Patent — 15%</label>
+            <div class="progress" style="height:20px;"><div class="progress-bar bg-warning text-dark" style="width:15%">15%</div></div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label small">Restaurant Pilot — 20%</label>
+            <div class="progress" style="height:20px;"><div class="progress-bar bg-success" style="width:20%">20%</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Factory Research -->
+  <section id="factory" class="section-dark">
+    <div class="container fade-section">
+      <h2 class="section-heading"><i class="bi bi-building-gear"></i> Factory Sushi Production Research</h2>
+      <div class="row g-4 mb-4">
+        <div class="col-md-4">
+          <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=80" alt="Food production" class="stock-img w-100" style="height:250px;">
+        </div>
+        <div class="col-md-8">
+          <p>The industrial sushi manufacturing landscape is dominated by two companies. Rice forming is a solved, mature technology (2,000&ndash;4,000 rolls/hour). The real engineering gap is <strong>automated multi-ingredient filling and assembly</strong>.</p>
+        </div>
+      </div>
+      <div class="accordion" id="factoryAccordion">
+        <div class="accordion-item" style="background:var(--card-surface);border-color:rgba(255,255,255,0.08);">
+          <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#factoryA1">Suzumo Machinery — Market Leader</button></h2>
+          <div id="factoryA1" class="accordion-collapse collapse show" data-bs-parent="#factoryAccordion">
+            <div class="accordion-body">
+              <ul>
+                <li><strong>~90% global market share</strong> in sushi equipment</li>
+                <li>70+ equipment models, 70,000+ customers in ~80 countries</li>
+                <li>Comprehensive product line from nigiri robots to full roll-forming systems</li>
+                <li>Dominant since the 1980s, deep institutional knowledge</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" style="background:var(--card-surface);border-color:rgba(255,255,255,0.08);">
+          <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#factoryA2">AUTEC (Audio-Technica Subsidiary)</button></h2>
+          <div id="factoryA2" class="accordion-collapse collapse" data-bs-parent="#factoryAccordion">
+            <div class="accordion-body">
+              <ul>
+                <li>Second-largest market share in rice-ball and sushi machines</li>
+                <li>Subsidiary of Audio-Technica — leverages precision manufacturing expertise</li>
+                <li>Strong in the nigiri and onigiri segments</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" style="background:var(--card-surface);border-color:rgba(255,255,255,0.08);">
+          <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#factoryA3">Rice Forming Technology</button></h2>
+          <div id="factoryA3" class="accordion-collapse collapse" data-bs-parent="#factoryAccordion">
+            <div class="accordion-body">
+              <ul>
+                <li>Mature technology producing 2,000&ndash;4,000 rolls/hour</li>
+                <li>Most machines require <strong>manual filling placement</strong> for complex rolls</li>
+                <li>Rice starch adhesion and machine fouling remain ongoing engineering challenges</li>
+                <li>Deformable food manipulation (cream cheese, salmon) is an active research area</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" style="background:var(--card-surface);border-color:rgba(255,255,255,0.08);">
+          <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#factoryA4">Patent Landscape</button></h2>
+          <div id="factoryA4" class="accordion-collapse collapse" data-bs-parent="#factoryAccordion">
+            <div class="accordion-body">
+              <ul>
+                <li>Relevant patents date primarily to the <strong>late 1990s through mid-2000s</strong></li>
+                <li>Describe belt/roller/plate rolling mechanisms</li>
+                <li>Suggests room for <strong>new IP around multi-ingredient assembly</strong></li>
+                <li>Key patents: US5634396, US6817285B2, JPH01196269A, US20050016389</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Cooling Technology -->
+  <section id="cooling" class="section-light">
+    <div class="container fade-section">
+      <h2 class="section-heading"><i class="bi bi-thermometer-snow"></i> Cooling Technology Assessment</h2>
+      <p class="text-secondary mb-4">Evaluated whether a Peltier cooler could flash-freeze 10oz salmon. Energy budget: ~95 kJ to go from fridge temp to -20&deg;C. Peltier is a poor fit &mdash; here are the alternatives.</p>
+
+      <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4">
+        <!-- Peltier -->
+        <div class="col">
+          <div class="card card-custom h-100 accent-left-red">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>Peltier / TEC</strong>
+              <span class="badge bg-danger">Not Recommended</span>
+            </div>
+            <div class="card-body">
+              <p class="small">Single TEC1-12706 would take ~2.2 hours. Terrible efficiency at the temperature differentials needed for FDA parasite destruction (-35&deg;C).</p>
+              <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="popover" data-bs-html="true" data-bs-trigger="click" title="Peltier Details" data-bs-content="<strong>Freeze time:</strong> ~2.2 hours<br><strong>Efficiency:</strong> Very poor at &Delta;T &gt; 40&deg;C<br><strong>Verdict:</strong> Rejected for this application"><i class="bi bi-info-circle"></i> Details</button>
+            </div>
+          </div>
+        </div>
+        <!-- Vapor Compression -->
+        <div class="col">
+          <div class="card card-custom h-100 accent-left-green">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>Vapor-Compression</strong>
+              <span class="badge bg-success">Commercial Pick</span>
+            </div>
+            <div class="card-body">
+              <p class="small">Small compressors (Danfoss BD35F/BD50F) reach -40&deg;C with 50&ndash;150W. Toaster-oven form factor. Freeze time: 16&ndash;45 minutes.</p>
+              <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="popover" data-bs-html="true" data-bs-trigger="click" title="Vapor-Compression Details" data-bs-content="<strong>Temp range:</strong> -40&deg;C<br><strong>Power:</strong> 50&ndash;150W cooling<br><strong>Freeze time:</strong> 16&ndash;45 min<br><strong>Form factor:</strong> Toaster-oven size"><i class="bi bi-info-circle"></i> Details</button>
+            </div>
+          </div>
+        </div>
+        <!-- Stirling -->
+        <div class="col">
+          <div class="card card-custom h-100 accent-left-blue">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>Stirling Cooler</strong>
+              <span class="badge bg-primary">Home Pick</span>
+            </div>
+            <div class="card-body">
+              <p class="small">Free-piston units reach -40&deg;C to -80&deg;C. Soda-can-sized cold head. No refrigerant, low vibration, near-silent. $150&ndash;$400 unit cost.</p>
+              <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="popover" data-bs-html="true" data-bs-trigger="click" title="Stirling Details" data-bs-content="<strong>Temp range:</strong> -40&deg;C to -80&deg;C<br><strong>Freeze time:</strong> 50&ndash;90 min<br><strong>Noise:</strong> Near-silent<br><strong>Cost:</strong> $150&ndash;$400<br><strong>Example:</strong> Twinbird SC-UB04"><i class="bi bi-info-circle"></i> Details</button>
+            </div>
+          </div>
+        </div>
+        <!-- Magnetic -->
+        <div class="col">
+          <div class="card card-custom h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>Magnetic Refrigeration</strong>
+              <span class="badge bg-secondary">Pre-Commercial</span>
+            </div>
+            <div class="card-body">
+              <p class="small">Magnetocaloric effect &mdash; no refrigerant or compressor. Still pre-commercial, expensive, and bulky. Not ready for tabletop products.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Vortex -->
+        <div class="col">
+          <div class="card card-custom h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>Vortex Tubes</strong>
+              <span class="badge bg-secondary">Commercial Only</span>
+            </div>
+            <div class="card-body">
+              <p class="small">No moving parts, can reach -40&deg;C air streams. Requires external compressed air source &mdash; viable only for kitchens with air lines.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison Table -->
+      <div class="table-responsive">
+        <table class="table table-dark table-striped table-hover">
+          <thead class="table-custom">
+            <tr><th>Technology</th><th>Efficiency</th><th>Cost</th><th>Size</th><th>Noise</th><th>Verdict</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Peltier</td><td><span class="text-danger">Poor</span></td><td>Low</td><td>Tiny</td><td>Silent</td><td><span class="badge bg-danger">Rejected</span></td></tr>
+            <tr><td>Vapor-Compression</td><td><span class="text-success">Good</span></td><td>Medium</td><td>Medium</td><td>Moderate</td><td><span class="badge bg-success">Commercial</span></td></tr>
+            <tr><td>Stirling</td><td><span class="text-info">Good</span></td><td>High</td><td>Small</td><td>Low</td><td><span class="badge bg-primary">Home</span></td></tr>
+            <tr><td>Magnetic</td><td><span class="text-warning">Unknown</span></td><td>Very High</td><td>Large</td><td>Low</td><td><span class="badge bg-secondary">Future</span></td></tr>
+            <tr><td>Vortex</td><td><span class="text-warning">Moderate</span></td><td>Low</td><td>Small</td><td>High</td><td><span class="badge bg-secondary">Niche</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Barriers to Entry -->
+  <section id="barriers" class="section-dark">
+    <div class="container fade-section">
+      <h2 class="section-heading"><i class="bi bi-shield-exclamation"></i> Barriers to Entry</h2>
+      <p class="text-secondary mb-4">The core mechanical concept of automated sushi rolling is not novel &mdash; the technology has existed since 1981. The real barriers are at the edges.</p>
+
+      <div class="accordion mb-4" id="barriersAccordion">
+        <div class="accordion-item" style="background:var(--card-surface);border-color:rgba(255,255,255,0.08);">
+          <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#barrierA1">Ingredient Variability</button></h2>
+          <div id="barrierA1" class="accordion-collapse collapse show" data-bs-parent="#barriersAccordion">
+            <div class="accordion-body">
+              <div class="alert alert-warning bg-transparent border-warning" role="alert">
+                <i class="bi bi-exclamation-triangle text-warning"></i> <strong>Critical Challenge:</strong> Different brands and temperatures of cream cheese, salmon, and rice behave differently in automated handling.
+              </div>
+              <p>Soft, deformable ingredients are among the hardest manipulation challenges in robotics. Each ingredient type requires calibration for viscosity, adhesion, and temperature response.</p>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" style="background:var(--card-surface);border-color:rgba(255,255,255,0.08);">
+          <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#barrierA2">Rice Fouling</button></h2>
+          <div id="barrierA2" class="accordion-collapse collapse" data-bs-parent="#barriersAccordion">
+            <div class="accordion-body">
+              <div class="alert alert-danger bg-transparent border-danger" role="alert">
+                <i class="bi bi-exclamation-octagon text-danger"></i> <strong>High Severity:</strong> Sushi rice sticks to everything and degrades non-stick coatings over time.
+              </div>
+              <p>Rice starch adhesion is a known issue in industrial sushi equipment. Frequent cleaning cycles and specialized coatings are required, adding maintenance complexity.</p>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" style="background:var(--card-surface);border-color:rgba(255,255,255,0.08);">
+          <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#barrierA3">Food Safety Certification</button></h2>
+          <div id="barrierA3" class="accordion-collapse collapse" data-bs-parent="#barriersAccordion">
+            <div class="accordion-body">
+              <div class="alert alert-info bg-transparent border-info" role="alert">
+                <i class="bi bi-clipboard-check text-info"></i> <strong>6&ndash;12 month process</strong> with real costs for FDA Seafood HACCP compliance.
+              </div>
+              <ul>
+                <li>Temperature control: 41&deg;F / 5&deg;C for hazardous foods</li>
+                <li>Rice acidification to pH 4.6 or below</li>
+                <li>Parasite destruction: -31&deg;F for 15 hours or -4&deg;F for 7 days</li>
+                <li>NSF certification for commercial equipment</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" style="background:var(--card-surface);border-color:rgba(255,255,255,0.08);">
+          <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#barrierA4">Market Gap Analysis</button></h2>
+          <div id="barrierA4" class="accordion-collapse collapse" data-bs-parent="#barriersAccordion">
+            <div class="accordion-body">
+              <div class="alert alert-success bg-transparent border-success" role="alert">
+                <i class="bi bi-lightbulb text-success"></i> <strong>Opportunity:</strong> Nobody has tried to make it cheap. The gap exists between $5K+ commercial and the consumer market.
+              </div>
+              <p>Japanese industrial equipment companies aren't interested in consumer products. Consumer appliance companies lack sushi domain expertise. This intersection is the opportunity.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Severity Summary -->
+      <div class="card card-custom">
+        <div class="card-header fw-semibold">Barrier Severity Summary</div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush" style="background:transparent;">
+            <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between align-items-center">Ingredient Variability <span class="badge bg-warning text-dark">Medium</span></li>
+            <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between align-items-center">Rice Fouling <span class="badge bg-danger">High</span></li>
+            <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between align-items-center">Food Safety Certification <span class="badge bg-warning text-dark">Medium</span></li>
+            <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between align-items-center">Hardware Startup Complexity <span class="badge bg-danger">High</span></li>
+            <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between align-items-center">Market Gap (Opportunity) <span class="badge bg-success">Favorable</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: Appendix -->
+  <section id="appendix" class="section-light">
+    <div class="container fade-section">
+      <h2 class="section-heading"><i class="bi bi-journal-bookmark"></i> Appendix: Sources & Links</h2>
+      <div class="row g-4">
+        <!-- Pill Nav -->
+        <div class="col-md-3">
+          <div class="nav flex-column nav-pills" id="appendixPills" role="tablist">
+            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pillCareers" type="button" role="tab"><i class="bi bi-briefcase"></i> Career Pages</button>
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pillManufacturers" type="button" role="tab"><i class="bi bi-building"></i> Manufacturers</button>
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pillPatents" type="button" role="tab"><i class="bi bi-file-earmark-text"></i> Patents</button>
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pillFDA" type="button" role="tab"><i class="bi bi-shield-check"></i> FDA / Regulatory</button>
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pillAcademic" type="button" role="tab"><i class="bi bi-journal-richtext"></i> Academic Papers</button>
+          </div>
+        </div>
+        <!-- Tab Content -->
+        <div class="col-md-9">
+          <div class="tab-content">
+            <!-- Careers -->
+            <div class="tab-pane fade show active" id="pillCareers" role="tabpanel">
+              <div class="list-group">
+                <a href="https://jobs.lever.co/saronic" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Saronic Technologies <span class="badge bg-secondary">lever.co</span></a>
+                <a href="https://www.skydio.com/careers" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Skydio <span class="badge bg-secondary">skydio.com</span></a>
+                <a href="https://amazon.jobs/en/teams/amazon-robotics" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Amazon Robotics <span class="badge bg-secondary">amazon.jobs</span></a>
+                <a href="https://jobs.northropgrumman.com/careers" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Northrop Grumman <span class="badge bg-secondary">northropgrumman.com</span></a>
+                <a href="https://www.flyzipline.com/careers" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Zipline <span class="badge bg-secondary">flyzipline.com</span></a>
+                <a href="https://www.nuro.ai/careerslist" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Nuro <span class="badge bg-secondary">nuro.ai</span></a>
+                <a href="https://locusrobotics.com/careers" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Locus Robotics <span class="badge bg-secondary">locusrobotics.com</span></a>
+                <a href="https://shield.ai/careers" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Shield AI <span class="badge bg-secondary">shield.ai</span></a>
+                <a href="https://careers.l3harris.com" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">L3Harris <span class="badge bg-secondary">l3harris.com</span></a>
+              </div>
+            </div>
+            <!-- Manufacturers -->
+            <div class="tab-pane fade" id="pillManufacturers" role="tabpanel">
+              <div class="list-group">
+                <a href="https://www.suzumokikou.com/" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Suzumo Machinery (Japan) <span class="badge bg-secondary">suzumokikou.com</span></a>
+                <a href="https://suzumoamerica.com/" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Suzumo International (North America) <span class="badge bg-secondary">suzumoamerica.com</span></a>
+                <a href="https://www.sushimachines.com/" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">AUTEC Sushi Robots <span class="badge bg-secondary">sushimachines.com</span></a>
+                <a href="https://www.sushirobo.com/" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Sushi Robo <span class="badge bg-secondary">sushirobo.com</span></a>
+                <a href="https://www.culimerequipment.com/collections/sushi-automation" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Culimer Sushi Automation <span class="badge bg-secondary">culimerequipment.com</span></a>
+                <a href="https://mtckitchen.com/collections/sushi-robots" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">MTC Kitchen — Sushi Robots <span class="badge bg-secondary">mtckitchen.com</span></a>
+                <a href="https://en.wikipedia.org/wiki/Sushi_machine" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Sushi Machine — Wikipedia <span class="badge bg-secondary">wikipedia.org</span></a>
+              </div>
+            </div>
+            <!-- Patents -->
+            <div class="tab-pane fade" id="pillPatents" role="tabpanel">
+              <div class="list-group">
+                <a href="https://patents.google.com/patent/US5634396" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">US 5,634,396 — Apparatus for forming sushi rolls <span class="badge bg-secondary">patents.google.com</span></a>
+                <a href="https://patents.google.com/patent/US6817285B2/en" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">US 6,817,285 B2 — Machines for making sushi rolls <span class="badge bg-secondary">patents.google.com</span></a>
+                <a href="https://patents.google.com/patent/JPH01196269A/en" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">JP H01-196269A — Machine for forming rolled sushi <span class="badge bg-secondary">patents.google.com</span></a>
+                <a href="https://patents.google.com/patent/US20050016389" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">US 20050016389 — Method and Apparatus For Making Sushi Rolls <span class="badge bg-secondary">patents.google.com</span></a>
+                <a href="https://patents.google.com/patent/WO2005016034A2/en" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">WO 2005/016034 A2 — Kit for home preparation of sushi <span class="badge bg-secondary">patents.google.com</span></a>
+              </div>
+            </div>
+            <!-- FDA -->
+            <div class="tab-pane fade" id="pillFDA" role="tabpanel">
+              <div class="list-group">
+                <a href="https://dphhs.mt.gov/assets/publichealth/FCS/SanitarianResourcePage/GuidanceDocuments/RetailFood/SUSHI.pdf" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">AFDO/FDA Sushi Processing Guidance (PDF) <span class="badge bg-secondary">dphhs.mt.gov</span></a>
+                <a href="https://www.foodprotect.org/issues/packets/2023Packet/attachments/III_004_content_c.pdf" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Conference for Food Protection — Sushi Guidelines <span class="badge bg-secondary">foodprotect.org</span></a>
+              </div>
+            </div>
+            <!-- Academic -->
+            <div class="tab-pane fade" id="pillAcademic" role="tabpanel">
+              <div class="list-group">
+                <h6 class="text-secondary mt-2 mb-2">Food Robotics</h6>
+                <a href="https://www.frontiersin.org/journals/robotics-and-ai/articles/10.3389/frobt.2021.789107/full" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Challenges and Opportunities in Robotic Food Handling <span class="badge bg-info">Frontiers 2022</span></a>
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0924224424003819" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Advancing food manufacturing: Leveraging robotic solutions <span class="badge bg-info">Trends Food Sci 2024</span></a>
+                <a href="https://www.sciencedirect.com/book/9781845698010/robotics-and-automation-in-the-food-industry" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Robotics and Automation in the Food Industry <span class="badge bg-info">Woodhead</span></a>
+                <a href="https://link.springer.com/content/pdf/10.1007/978-3-031-76758-6_8.pdf" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Robotics and Automation in Food Manufacturing <span class="badge bg-info">Springer 2024</span></a>
+
+                <h6 class="text-secondary mt-3 mb-2">Soft Grippers & Deformable Objects</h6>
+                <a href="https://www.tandfonline.com/doi/full/10.1080/01691864.2025.2508785" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Review of robotic grippers for high-speed food handling <span class="badge bg-info">Adv Robotics 2025</span></a>
+                <a href="https://onlinelibrary.wiley.com/doi/10.1002/rob.22488" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Soft-Containing Gripper for Breadcrumb-Coated Oysters <span class="badge bg-info">J Field Robotics 2025</span></a>
+                <a href="https://ieeexplore.ieee.org/iel7/3516/9924618/09550783.pdf" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Sensorized Reconfigurable Soft Robotic Gripper <span class="badge bg-info">IEEE/ASME</span></a>
+                <a href="https://www.mdpi.com/1424-8220/25/17/5430" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Deformable and Fragile Object Manipulation: A Review <span class="badge bg-info">MDPI Sensors 2025</span></a>
+
+                <h6 class="text-secondary mt-3 mb-2">Rice Starch & Seaweed</h6>
+                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11722826/" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Rice Starch Chemistry, Functional Properties, and Applications <span class="badge bg-info">PMC 2024</span></a>
+                <a href="https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2021.613093/full" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Automation for Industrial-Scale Seaweed Production <span class="badge bg-info">Frontiers 2021</span></a>
+                <a href="https://onlinelibrary.wiley.com/doi/10.1111/jtxs.70007" target="_blank" rel="noopener" class="list-group-item list-group-item-action bg-transparent border-secondary">Starch-Based Food Product Designs With Seaweeds <span class="badge bg-info">J Texture 2025</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ryan's Portfolio -->
+      <div class="mt-4 p-3 rounded" style="background:var(--card-surface);">
+        <h6><i class="bi bi-globe2 text-info"></i> Ryan's Portfolio</h6>
+        <a href="https://robotsbyryan.com" target="_blank" rel="noopener" class="btn btn-outline-info btn-sm me-2">robotsbyryan.com</a>
+        <a href="https://robotsbyryan.com/education" target="_blank" rel="noopener" class="btn btn-outline-secondary btn-sm">Education Page</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-4" style="background: #111827; border-top: 1px solid rgba(233,69,96,0.2);">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <h6 class="fw-bold"><i class="bi bi-gear-wide-connected text-danger"></i> Maki Machines</h6>
+          <p class="small text-secondary">Session summary covering career direction, the Maki Machines automated sushi startup concept, and comprehensive manufacturing research.</p>
+        </div>
+        <div class="col-md-4">
+          <h6 class="fw-bold">Quick Links</h6>
+          <ul class="list-unstyled small">
+            <li><a href="#portfolio" class="text-secondary text-decoration-none">Portfolio & Education</a></li>
+            <li><a href="#jobsearch" class="text-secondary text-decoration-none">Job Search</a></li>
+            <li><a href="#makimachines" class="text-secondary text-decoration-none">Maki Machines Concept</a></li>
+            <li><a href="#cooling" class="text-secondary text-decoration-none">Cooling Technology</a></li>
+            <li><a href="#appendix" class="text-secondary text-decoration-none">Full Appendix</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h6 class="fw-bold">About</h6>
+          <p class="small text-secondary mb-1">Built with Bootstrap 5 &amp; Bootstrap Icons</p>
+          <p class="small text-secondary mb-0">Stock photography via Unsplash</p>
+        </div>
+      </div>
+      <hr style="border-color:rgba(255,255,255,0.1);">
+      <p class="text-center text-secondary small mb-0">&copy; 2026 Ryan Gauthier &mdash; Maki Machines Session Summary</p>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Scroll progress bar
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = (scrollTop / scrollHeight) * 100;
+      document.getElementById('scrollProgress').style.width = progress + '%';
+
+      // Back to top visibility
+      const btn = document.getElementById('backToTop');
+      if (scrollTop > 300) btn.classList.add('show');
+      else btn.classList.remove('show');
+    });
+
+    // Fade-in on scroll (Intersection Observer)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-section').forEach(el => observer.observe(el));
+
+    // Initialize tooltips
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
+
+    // Initialize popovers
+    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => new bootstrap.Popover(el));
+
+    // Collapse mobile nav on link click
+    document.querySelectorAll('#navCollapse .nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        const navCollapse = document.getElementById('navCollapse');
+        if (navCollapse.classList.contains('show')) {
+          new bootstrap.Collapse(navCollapse, { toggle: true });
+        }
+      });
+    });
+
+    // Reinitialize ScrollSpy after page load for reliable nav highlighting
+    const scrollSpyEl = document.querySelector('[data-bs-spy="scroll"]');
+    if (scrollSpyEl) {
+      bootstrap.ScrollSpy.getOrCreateInstance(scrollSpyEl).refresh();
+    }
+  </script>
+</body>
+</html>
