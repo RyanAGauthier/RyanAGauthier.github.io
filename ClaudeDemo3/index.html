@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artifact Emporium</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #100a1c;
+            --bg-card: #1c1630;
+            --gold: #ffd232;
+            --common: #aaaab4;
+            --uncommon: #32c837;
+            --rare: #3c82ff;
+            --epic: #b44bff;
+            --legendary: #ff961e;
+        }
+        body {
+            background: linear-gradient(180deg, #16102b, #0c0816);
+            min-height: 100vh;
+        }
+        .hero {
+            padding: 5rem 0 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 80%, rgba(255,210,50,0.08), transparent 70%);
+            pointer-events: none;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: var(--gold);
+            text-shadow: 0 0 40px rgba(255,210,50,0.3);
+        }
+        .hero .lead { color: #b8b4c8; max-width: 600px; margin: 1rem auto 0; }
+        .badge-rarity {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.25em 0.6em;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid #32284a;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .card:hover {
+            border-color: #504070;
+            transform: translateY(-3px);
+        }
+        .item-thumb {
+            width: 80px; height: 80px;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 0 8px rgba(255,210,50,0.15));
+        }
+        .item-thumb-sm {
+            width: 56px; height: 56px;
+            image-rendering: pixelated;
+        }
+        .pedestal-img {
+            max-width: 200px;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 0 20px rgba(255,150,30,0.25));
+        }
+        .showcase-row {
+            image-rendering: pixelated;
+            max-width: 100%;
+            height: auto;
+            filter: drop-shadow(0 0 12px rgba(255,210,50,0.15));
+        }
+        .section-title {
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            border-bottom: 2px solid #32284a;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        .stat-card .stat-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--gold);
+        }
+        .stat-card .stat-label {
+            color: #8880a0;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .rarity-common    { color: var(--common); border-color: var(--common) !important; }
+        .rarity-uncommon  { color: var(--uncommon); border-color: var(--uncommon) !important; }
+        .rarity-rare      { color: var(--rare); border-color: var(--rare) !important; }
+        .rarity-epic      { color: var(--epic); border-color: var(--epic) !important; }
+        .rarity-legendary { color: var(--legendary); border-color: var(--legendary) !important; }
+        .bg-common    { background: var(--common) !important; }
+        .bg-uncommon  { background: var(--uncommon) !important; }
+        .bg-rare      { background: var(--rare) !important; }
+        .bg-epic      { background: var(--epic) !important; }
+        .bg-legendary { background: var(--legendary) !important; }
+        .gallery-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.8rem;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid #28203c;
+            transition: border-color 0.2s;
+        }
+        .gallery-item:hover { border-color: #504070; }
+        .gallery-item .name { font-size: 0.78rem; margin-top: 0.4rem; text-align: center; }
+        .mechanic-icon {
+            font-size: 2rem;
+            width: 48px; height: 48px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 10px;
+            background: rgba(255,210,50,0.08);
+            flex-shrink: 0;
+        }
+        footer { border-top: 1px solid #1c1630; color: #58506e; }
+        .code-tag {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.82rem;
+            background: rgba(255,255,255,0.05);
+            padding: 0.15em 0.45em;
+            border-radius: 4px;
+            color: #c0b8d4;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <img src="assets/pedestal_scene.png" alt="Pedestal with Excalibur"
+             class="pedestal-img mb-4">
+        <h1>Artifact Emporium</h1>
+        <p class="lead">
+            An isometric autochess-style shop game built with Python and Pygame.
+            Browse a finite pool of procedurally-drawn artifacts, mine ore for gold,
+            and manage your collection.
+        </p>
+        <div class="mt-4">
+            <span class="badge bg-secondary me-1">Python 3.12</span>
+            <span class="badge bg-secondary me-1">Pygame 2.6</span>
+            <span class="badge bg-secondary">Procedural Art</span>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-value">45</div>
+                    <div class="stat-label">Unique Items</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-value">17</div>
+                    <div class="stat-label">Sprite Types</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Rarity Tiers</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-value">~600</div>
+                    <div class="stat-label">Lines of Code</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Showcase Row -->
+<section class="py-4">
+    <div class="container text-center">
+        <img src="assets/showcase_row.png" alt="Item showcase" class="showcase-row mb-2">
+        <p class="text-muted small">Legendary &middot; Epic &middot; Rare &middot; Uncommon &middot; Common</p>
+    </div>
+</section>
+
+<!-- Rarity Tiers -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Rarity Tiers</h2>
+        <div class="row g-3">
+            <div class="col-md col-6">
+                <div class="card p-3 text-center border-start border-3 rarity-common">
+                    <img src="assets/dull_dagger.png" alt="Common" class="item-thumb mx-auto mb-2">
+                    <h6 class="rarity-common mb-1">Common</h6>
+                    <small class="text-muted">8 copies &middot; 2-12g</small>
+                </div>
+            </div>
+            <div class="col-md col-6">
+                <div class="card p-3 text-center border-start border-3 rarity-uncommon">
+                    <img src="assets/salvage_hammer.png" alt="Uncommon" class="item-thumb mx-auto mb-2">
+                    <h6 class="rarity-uncommon mb-1">Uncommon</h6>
+                    <small class="text-muted">6 copies &middot; 13-23g</small>
+                </div>
+            </div>
+            <div class="col-md col-6">
+                <div class="card p-3 text-center border-start border-3 rarity-rare">
+                    <img src="assets/arcane_staff.png" alt="Rare" class="item-thumb mx-auto mb-2">
+                    <h6 class="rarity-rare mb-1">Rare</h6>
+                    <small class="text-muted">4 copies &middot; 24-34g</small>
+                </div>
+            </div>
+            <div class="col-md col-6">
+                <div class="card p-3 text-center border-start border-3 rarity-epic">
+                    <img src="assets/demon_crown.png" alt="Epic" class="item-thumb mx-auto mb-2">
+                    <h6 class="rarity-epic mb-1">Epic</h6>
+                    <small class="text-muted">3 copies &middot; 36-50g</small>
+                </div>
+            </div>
+            <div class="col-md col-6">
+                <div class="card p-3 text-center border-start border-3 rarity-legendary">
+                    <img src="assets/excalibur.png" alt="Legendary" class="item-thumb mx-auto mb-2">
+                    <h6 class="rarity-legendary mb-1">Legendary</h6>
+                    <small class="text-muted">1 copy &middot; 60-80g</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mechanics -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Game Mechanics</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card p-4 h-100">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="mechanic-icon">&#9874;</div>
+                        <div>
+                            <h5 class="mb-1">Finite Item Pool</h5>
+                            <p class="text-muted mb-0 small">
+                                Items are drawn from a shared pool. Rarity determines copies available.
+                                Buying depletes the pool; refreshing returns unsold items and reshuffles.
+                                Strategy emerges from scarcity.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-4 h-100">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="mechanic-icon">&#9853;</div>
+                        <div>
+                            <h5 class="mb-1">Ore Mining</h5>
+                            <p class="text-muted mb-0 small">
+                                A rock pile provides supplemental income: 1-3 gold per mine with a
+                                cooldown. 15 charges that visually deplete. 3 charges restock on
+                                each shop refresh.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-4 h-100">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="mechanic-icon">&#128296;</div>
+                        <div>
+                            <h5 class="mb-1">Salvage Hammer</h5>
+                            <p class="text-muted mb-0 small">
+                                A useable item that converts any inventory item into 75% of its gold
+                                value. Click the hammer, then click a target. Both are consumed.
+                                Enables gold recovery from bad purchases.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-4 h-100">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="mechanic-icon">&#127890;</div>
+                        <div>
+                            <h5 class="mb-1">Extensible Effect System</h5>
+                            <p class="text-muted mb-0 small">
+                                Items carry optional effect dicts with trigger types:
+                                <span class="code-tag">on_buy</span> (consumed at purchase) and
+                                <span class="code-tag">use_on_target</span> (activated from inventory).
+                                New effects need only a template and a handler.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Item Gallery -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Sprite Gallery</h2>
+        <p class="text-muted small mb-4">
+            All sprites are procedurally generated at 32&times;32 using <span class="code-tag">pygame.draw</span>
+            primitives. Shown here at 4&times; scale. Rarity tints the accent colour.
+        </p>
+        <div class="row g-2">
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/excalibur.png" alt="Excalibur" class="item-thumb-sm">
+                    <span class="name rarity-legendary">Excalibur</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/infinity_gem.png" alt="Infinity Gem" class="item-thumb-sm">
+                    <span class="name rarity-legendary">Infinity Gem</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/aegis.png" alt="Aegis" class="item-thumb-sm">
+                    <span class="name rarity-epic">Aegis</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/demon_crown.png" alt="Demon Crown" class="item-thumb-sm">
+                    <span class="name rarity-epic">Demon Crown</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/abyssal_orb.png" alt="Abyssal Orb" class="item-thumb-sm">
+                    <span class="name rarity-epic">Abyssal Orb</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/skeleton_key.png" alt="Skeleton Key" class="item-thumb-sm">
+                    <span class="name rarity-epic">Skeleton Key</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/arcane_staff.png" alt="Arcane Staff" class="item-thumb-sm">
+                    <span class="name rarity-rare">Arcane Staff</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/elixir.png" alt="Elixir of Power" class="item-thumb-sm">
+                    <span class="name rarity-rare">Elixir</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/phoenix_amulet.png" alt="Phoenix Amulet" class="item-thumb-sm">
+                    <span class="name rarity-rare">Phoenix Amulet</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/tome.png" alt="Tome of Lore" class="item-thumb-sm">
+                    <span class="name rarity-rare">Tome of Lore</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/chalice.png" alt="Golden Chalice" class="item-thumb-sm">
+                    <span class="name rarity-rare">Chalice</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/salvage_hammer.png" alt="Salvage Hammer" class="item-thumb-sm">
+                    <span class="name rarity-uncommon">Salvage Hammer</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/silver_ring.png" alt="Silver Ring" class="item-thumb-sm">
+                    <span class="name rarity-uncommon">Silver Ring</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/chain_helm.png" alt="Chain Helm" class="item-thumb-sm">
+                    <span class="name rarity-uncommon">Chain Helm</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/spell_scroll.png" alt="Spell Scroll" class="item-thumb-sm">
+                    <span class="name rarity-uncommon">Spell Scroll</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/satchel.png" alt="Leather Satchel" class="item-thumb-sm">
+                    <span class="name rarity-common">Satchel</span>
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 col-md-2">
+                <div class="gallery-item">
+                    <img src="assets/dull_dagger.png" alt="Dull Dagger" class="item-thumb-sm">
+                    <span class="name rarity-common">Dull Dagger</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Architecture -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Project Structure</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card p-4 h-100">
+                    <h6 class="mb-3"><span class="code-tag">main.py</span> &mdash; Game Loop</h6>
+                    <p class="text-muted small mb-0">
+                        Event handling, game state, effect dispatch, and targeting mode.
+                        Contains <span class="code-tag">Game</span>,
+                        <span class="code-tag">Notification</span>, and
+                        <span class="code-tag">Particle</span> classes.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-4 h-100">
+                    <h6 class="mb-3"><span class="code-tag">items.py</span> &mdash; Items &amp; Sprites</h6>
+                    <p class="text-muted small mb-0">
+                        45 item templates with the extensible effect system.
+                        17 procedural sprite draw functions with lazy caching by (kind, rarity).
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <h6 class="mb-3"><span class="code-tag">renderer.py</span></h6>
+                    <p class="text-muted small mb-0">
+                        All drawing: isometric floor, pedestals, items, ore pile,
+                        UI panels, tooltips, particles, targeting visuals.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <h6 class="mb-3"><span class="code-tag">shop.py</span></h6>
+                    <p class="text-muted small mb-0">
+                        Finite pool management. Creates items from templates,
+                        handles display slots, draw, buy, and refresh.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <h6 class="mb-3"><span class="code-tag">config.py</span></h6>
+                    <p class="text-muted small mb-0">
+                        All constants: screen dimensions, colours, rarity definitions,
+                        pool sizes, layout positions, ore settings.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Controls -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Controls</h2>
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <div class="card px-4 py-3 text-center">
+                    <kbd class="mb-1" style="font-size:1.2rem">1</kbd>-<kbd class="mb-1" style="font-size:1.2rem">5</kbd>
+                    <div class="small text-muted">Quick Buy</div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="card px-4 py-3 text-center">
+                    <kbd class="mb-1" style="font-size:1.2rem">R</kbd>
+                    <div class="small text-muted">Refresh Shop</div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="card px-4 py-3 text-center">
+                    <kbd class="mb-1" style="font-size:1.2rem">Click</kbd>
+                    <div class="small text-muted">Buy / Mine / Use</div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="card px-4 py-3 text-center">
+                    <kbd class="mb-1" style="font-size:1.2rem">ESC</kbd>
+                    <div class="small text-muted">Cancel / Quit</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Run -->
+<section class="py-5">
+    <div class="container text-center">
+        <h2 class="section-title text-center" style="border:none;">Run It</h2>
+        <div class="card d-inline-block px-5 py-4 text-start" style="font-family: monospace; font-size: 0.9rem;">
+            <span class="text-muted">$</span> pip install pygame<br>
+            <span class="text-muted">$</span> python main.py
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-4 mt-4 text-center small">
+    <div class="container">
+        Artifact Emporium &middot; Built with Python &amp; Pygame &middot; All sprites procedurally generated
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
