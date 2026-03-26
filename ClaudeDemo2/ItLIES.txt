@@ -1,0 +1,1 @@
+It lied about the clipboard as far as I can tell.
