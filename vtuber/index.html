@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robot VTuber</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    overflow: hidden;
+    background: #1a1a2e;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #e0e0e0;
+    user-select: none;
+  }
+  #canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+  }
+  #webcam {
+    position: fixed;
+    top: 10px; right: 10px;
+    width: 160px; height: 120px;
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.2);
+    object-fit: cover;
+    transform: scaleX(-1);
+    z-index: 10;
+    display: none;
+  }
+  #webcam.visible { display: block; }
+
+  #controls {
+    position: fixed;
+    bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 10px;
+    z-index: 20;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+  #controls:hover { opacity: 1; }
+  .btn {
+    padding: 8px 16px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+    background: rgba(30,30,50,0.8);
+    color: #e0e0e0;
+    cursor: pointer;
+    font-size: 13px;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+  }
+  .btn:hover { background: rgba(60,60,100,0.8); border-color: rgba(255,255,255,0.5); }
+  .btn.active { background: rgba(80,120,200,0.6); border-color: rgba(100,150,255,0.7); }
+
+  #status {
+    position: fixed;
+    top: 10px; left: 10px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    z-index: 20;
+  }
+
+  /* Green screen mode */
+  body.greenscreen { background: #00ff00; }
+
+  /* Transparent mode for OBS */
+  body.transparent { background: transparent; }
+
+  #sensitivity-panel {
+    position: fixed;
+    top: 50px; left: 10px;
+    z-index: 20;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(30,30,50,0.9);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    font-size: 12px;
+  }
+  #sensitivity-panel.visible { display: flex; }
+  #sensitivity-panel label { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  #sensitivity-panel input[type="range"] { width: 100px; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<video id="webcam" autoplay playsinline muted></video>
+<div id="status">Click "Start Tracking" to begin</div>
+<div id="controls">
+  <button class="btn" id="btn-track">Start Tracking</button>
+  <button class="btn" id="btn-mic">Enable Mic</button>
+  <button class="btn" id="btn-green">Green Screen</button>
+  <button class="btn" id="btn-transparent">Transparent</button>
+  <button class="btn" id="btn-preview">Show Webcam</button>
+  <button class="btn" id="btn-settings">Settings</button>
+</div>
+<div id="sensitivity-panel">
+  <label>Head Move <input type="range" id="sense-head" min="0.2" max="3" step="0.1" value="1.0"><span id="val-head">1.0</span></label>
+  <label>Eye Track <input type="range" id="sense-eye" min="0.2" max="3" step="0.1" value="1.0"><span id="val-eye">1.0</span></label>
+  <label>Mouth <input type="range" id="sense-mouth" min="0.2" max="3" step="0.1" value="1.0"><span id="val-mouth">1.0</span></label>
+  <label>Idle Speed <input type="range" id="sense-idle" min="0.2" max="3" step="0.1" value="1.0"><span id="val-idle">1.0</span></label>
+</div>
+
+<script type="module">
+// ═══════════════════════════════════════════════════════════
+// CONFIGURATION
+// ═══════════════════════════════════════════════════════════
+const CONFIG = {
+  headSensitivity: 1.0,
+  eyeSensitivity: 1.0,
+  mouthSensitivity: 1.0,
+  idleSpeed: 1.0,
+  smoothing: 0.15,        // Lower = smoother, higher = more responsive
+  antennaDamping: 0.82,
+  antennaStiffness: 0.08,
+  breathSpeed: 0.8,
+  armSwaySpeed: 0.5,
+  characterScale: 1.0,
+};
+
+// ═══════════════════════════════════════════════════════════
+// SPRING PHYSICS
+// ═══════════════════════════════════════════════════════════
+class Spring {
+  constructor(stiffness = 0.08, damping = 0.82) {
+    this.x = 0; this.y = 0;
+    this.vx = 0; this.vy = 0;
+    this.targetX = 0; this.targetY = 0;
+    this.stiffness = stiffness;
+    this.damping = damping;
+  }
+  setTarget(x, y) { this.targetX = x; this.targetY = y; }
+  update() {
+    const ax = (this.targetX - this.x) * this.stiffness;
+    const ay = (this.targetY - this.y) * this.stiffness;
+    this.vx = (this.vx + ax) * this.damping;
+    this.vy = (this.vy + ay) * this.damping;
+    this.x += this.vx;
+    this.y += this.vy;
+  }
+}
+
+// Simple lerp utility
+function lerp(a, b, t) { return a + (b - a) * t; }
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+// ═══════════════════════════════════════════════════════════
+// TRACKING STATE (shared between tracker and character)
+// ═══════════════════════════════════════════════════════════
+const tracking = {
+  headYaw: 0,       // left/right rotation (-1 to 1)
+  headPitch: 0,     // up/down (-1 to 1)
+  headRoll: 0,      // tilt (-1 to 1)
+  eyeBlinkL: 0,     // 0=open, 1=closed
+  eyeBlinkR: 0,
+  mouthOpen: 0,     // 0=closed, 1=fully open
+  eyeGazeX: 0,      // -1 to 1
+  eyeGazeY: 0,      // -1 to 1
+  browRaiseL: 0,
+  browRaiseR: 0,
+  active: false,
+};
+
+// Smoothed values (what the character actually uses)
+const smooth = { ...tracking };
+
+function updateSmoothing() {
+  const t = CONFIG.smoothing;
+  smooth.headYaw = lerp(smooth.headYaw, tracking.headYaw * CONFIG.headSensitivity, t);
+  smooth.headPitch = lerp(smooth.headPitch, tracking.headPitch * CONFIG.headSensitivity, t);
+  smooth.headRoll = lerp(smooth.headRoll, tracking.headRoll * CONFIG.headSensitivity, t);
+  smooth.eyeBlinkL = lerp(smooth.eyeBlinkL, tracking.eyeBlinkL, t * 2);
+  smooth.eyeBlinkR = lerp(smooth.eyeBlinkR, tracking.eyeBlinkR, t * 2);
+  smooth.mouthOpen = lerp(smooth.mouthOpen, tracking.mouthOpen * CONFIG.mouthSensitivity, t * 2.5);
+  smooth.eyeGazeX = lerp(smooth.eyeGazeX, tracking.eyeGazeX * CONFIG.eyeSensitivity, t);
+  smooth.eyeGazeY = lerp(smooth.eyeGazeY, tracking.eyeGazeY * CONFIG.eyeSensitivity, t);
+  smooth.browRaiseL = lerp(smooth.browRaiseL, tracking.browRaiseL, t);
+  smooth.browRaiseR = lerp(smooth.browRaiseR, tracking.browRaiseR, t);
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUDIO REACTIVITY
+// ═══════════════════════════════════════════════════════════
+let audioCtx = null;
+let analyser = null;
+let micActive = false;
+
+async function startMic() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioCtx = new AudioContext();
+    const source = audioCtx.createMediaStreamSource(stream);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.5;
+    source.connect(analyser);
+    micActive = true;
+    return true;
+  } catch (e) {
+    console.warn('Mic access denied:', e);
+    return false;
+  }
+}
+
+function getAudioLevel() {
+  if (!analyser) return 0;
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(data);
+  // Focus on voice frequencies (roughly bins 2-30 for speech)
+  let sum = 0;
+  const start = 2, end = 30;
+  for (let i = start; i < end; i++) sum += data[i];
+  const avg = sum / (end - start);
+  return clamp(avg / 128, 0, 1);
+}
+
+// ═══════════════════════════════════════════════════════════
+// WOBBLY LINE DRAWING (hand-drawn style)
+// ═══════════════════════════════════════════════════════════
+// Pre-seeded wobble so lines don't jitter per frame
+const wobbleCache = new Map();
+let wobbleSeed = 0;
+
+function seededRandom(seed) {
+  const x = Math.sin(seed * 127.1 + seed * 311.7) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+function wobblyRect(ctx, x, y, w, h, wobble = 1.5, seed = null) {
+  if (seed === null) seed = wobbleSeed++;
+  const s = seed;
+  const pts = [
+    [x, y], [x + w, y], [x + w, y + h], [x, y + h]
+  ];
+  ctx.beginPath();
+  for (let i = 0; i < 4; i++) {
+    const [x1, y1] = pts[i];
+    const [x2, y2] = pts[(i + 1) % 4];
+    const segs = 4;
+    if (i === 0) ctx.moveTo(x1 + (seededRandom(s + i * 10) - 0.5) * wobble, y1 + (seededRandom(s + i * 10 + 1) - 0.5) * wobble);
+    for (let j = 1; j <= segs; j++) {
+      const t = j / segs;
+      const px = x1 + (x2 - x1) * t + (seededRandom(s + i * 10 + j * 2) - 0.5) * wobble;
+      const py = y1 + (y2 - y1) * t + (seededRandom(s + i * 10 + j * 2 + 1) - 0.5) * wobble;
+      ctx.lineTo(px, py);
+    }
+  }
+  ctx.closePath();
+}
+
+function wobblyLine(ctx, x1, y1, x2, y2, wobble = 1.5, seed = null) {
+  if (seed === null) seed = wobbleSeed++;
+  const segs = 5;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  for (let j = 1; j <= segs; j++) {
+    const t = j / segs;
+    const px = x1 + (x2 - x1) * t + (seededRandom(seed + j * 2) - 0.5) * wobble;
+    const py = y1 + (y2 - y1) * t + (seededRandom(seed + j * 2 + 1) - 0.5) * wobble;
+    ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+}
+
+function wobblyEllipse(ctx, cx, cy, rx, ry, wobble = 1.5, seed = null) {
+  if (seed === null) seed = wobbleSeed++;
+  const segs = 16;
+  ctx.beginPath();
+  for (let i = 0; i <= segs; i++) {
+    const a = (i / segs) * Math.PI * 2;
+    const px = cx + Math.cos(a) * rx + (seededRandom(seed + i * 2) - 0.5) * wobble;
+    const py = cy + Math.sin(a) * ry + (seededRandom(seed + i * 2 + 1) - 0.5) * wobble;
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHARACTER DRAWING
+// ═══════════════════════════════════════════════════════════
+const antennaSprings = [
+  new Spring(0.06, 0.80),
+  new Spring(0.05, 0.78),
+  new Spring(0.07, 0.82),
+];
+
+let time = 0;
+
+function drawCharacter(ctx, cx, cy, scale) {
+  time += 0.016 * CONFIG.idleSpeed;
+  wobbleSeed = 42; // Reset seed each frame for consistency
+
+  // Update spring physics for antennae
+  const headForceX = -smooth.headYaw * 30;
+  const headForceY = -smooth.headPitch * 20;
+  antennaSprings.forEach((s, i) => {
+    s.setTarget(headForceX * (0.8 + i * 0.2), headForceY * (0.8 + i * 0.15));
+    s.update();
+  });
+
+  // Idle animations
+  const breathe = Math.sin(time * CONFIG.breathSpeed * 2) * 0.008;
+  const breatheY = Math.sin(time * CONFIG.breathSpeed * 2) * 2;
+  const armSwayL = Math.sin(time * CONFIG.armSwaySpeed * 1.3) * 3;
+  const armSwayR = Math.sin(time * CONFIG.armSwaySpeed * 1.3 + 1.5) * 3;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(scale, scale);
+
+  // Global head offset from tracking
+  const headX = smooth.headYaw * 40;
+  const headY = smooth.headPitch * 25;
+  const headTilt = smooth.headRoll * 0.15;
+
+  // Body slight follow
+  const bodyX = headX * 0.15;
+  const bodyY = headY * 0.1;
+  const bodyTilt = headTilt * 0.3;
+
+  // ---- LEGS ----
+  drawLegs(ctx, bodyX, bodyY + breatheY);
+
+  // ---- BODY ----
+  ctx.save();
+  ctx.translate(bodyX, bodyY + breatheY);
+  ctx.rotate(bodyTilt);
+  ctx.scale(1 + breathe, 1 - breathe * 0.5);
+  drawBody(ctx);
+  ctx.restore();
+
+  // ---- LEFT ARM (with cloth) ----
+  ctx.save();
+  ctx.translate(bodyX - 90, bodyY - 20 + breatheY);
+  ctx.rotate(bodyTilt + Math.sin(time * 0.7) * 0.03);
+  drawLeftArm(ctx, armSwayL);
+  ctx.restore();
+
+  // ---- RIGHT ARM (with claw) ----
+  ctx.save();
+  ctx.translate(bodyX + 95, bodyY - 10 + breatheY);
+  ctx.rotate(bodyTilt + Math.sin(time * 0.6 + 1) * 0.03);
+  drawRightArm(ctx, armSwayR);
+  ctx.restore();
+
+  // ---- HEAD ----
+  ctx.save();
+  ctx.translate(headX, headY - 100 + breatheY * 0.5);
+  ctx.rotate(headTilt);
+  drawHead(ctx);
+
+  // ---- ANTENNAE ----
+  drawAntennae(ctx);
+
+  // ---- EYES ----
+  drawEyes(ctx, smooth.eyeGazeX, smooth.eyeGazeY, smooth.eyeBlinkL, smooth.eyeBlinkR);
+
+  // ---- NOSE/BEAK ----
+  drawBeak(ctx);
+
+  // ---- MOUTH ----
+  drawMouth(ctx, smooth.mouthOpen);
+
+  ctx.restore(); // head transform
+
+  ctx.restore(); // global transform
+}
+
+function drawBody(ctx) {
+  const w = 180, h = 140;
+  const x = -w / 2, y = -h / 2 + 20;
+
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#1a1a1a';
+  ctx.fillStyle = '#f5f0e8';
+
+  // Front face
+  wobblyRect(ctx, x, y, w, h, 2, 100);
+  ctx.fill();
+  ctx.stroke();
+
+  // Top face (3D effect)
+  const depth = 25;
+  ctx.beginPath();
+  ctx.moveTo(x + 2, y);
+  ctx.lineTo(x + depth + 5, y - depth);
+  ctx.lineTo(x + w + depth + 3, y - depth);
+  ctx.lineTo(x + w - 1, y);
+  ctx.closePath();
+  ctx.fillStyle = '#e8e3da';
+  ctx.fill();
+  ctx.stroke();
+
+  // Right side face
+  ctx.beginPath();
+  ctx.moveTo(x + w - 1, y);
+  ctx.lineTo(x + w + depth + 3, y - depth);
+  ctx.lineTo(x + w + depth + 1, y + h - depth);
+  ctx.lineTo(x + w - 1, y + h);
+  ctx.closePath();
+  ctx.fillStyle = '#ddd8cf';
+  ctx.fill();
+  ctx.stroke();
+
+  // Panel line detail
+  ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+  ctx.lineWidth = 1;
+  wobblyLine(ctx, x + 30, y + 40, x + w - 30, y + 40, 1, 110);
+  wobblyLine(ctx, x + w / 2, y + 15, x + w / 2, y + h - 15, 1, 111);
+
+  // Small circle detail (rivet)
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.beginPath();
+  ctx.arc(x + 30, y + 20, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(x + w - 30, y + 20, 4, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawHead(ctx) {
+  const w = 160, h = 130;
+  const x = -w / 2, y = -h / 2 - 10;
+
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#1a1a1a';
+
+  // Front face
+  ctx.fillStyle = '#f5f0e8';
+  wobblyRect(ctx, x, y, w, h, 2, 200);
+  ctx.fill();
+  ctx.stroke();
+
+  // Top face (3D perspective)
+  const depth = 22;
+  ctx.beginPath();
+  ctx.moveTo(x + 2, y);
+  ctx.lineTo(x + depth + 3, y - depth);
+  ctx.lineTo(x + w + depth + 1, y - depth);
+  ctx.lineTo(x + w - 2, y);
+  ctx.closePath();
+  ctx.fillStyle = '#e8e3da';
+  ctx.fill();
+  ctx.stroke();
+
+  // Right side face
+  ctx.beginPath();
+  ctx.moveTo(x + w - 2, y);
+  ctx.lineTo(x + w + depth + 1, y - depth);
+  ctx.lineTo(x + w + depth - 1, y + h - depth);
+  ctx.lineTo(x + w - 2, y + h);
+  ctx.closePath();
+  ctx.fillStyle = '#ddd8cf';
+  ctx.fill();
+  ctx.stroke();
+}
+
+function drawAntennae(ctx) {
+  const baseY = -75;
+
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#1a1a1a';
+  ctx.lineCap = 'round';
+
+  const antennaConfigs = [
+    { bx: -25, by: baseY, angle: -0.6, len: 55 },
+    { bx: 5,   by: baseY, angle: -0.1, len: 60 },
+    { bx: 30,  by: baseY, angle: 0.5,  len: 50 },
+  ];
+
+  antennaConfigs.forEach((cfg, i) => {
+    const spring = antennaSprings[i];
+    const wobX = spring.x;
+    const wobY = spring.y;
+
+    const endX = cfg.bx + Math.sin(cfg.angle) * cfg.len + wobX;
+    const endY = cfg.by - Math.cos(cfg.angle) * cfg.len + wobY;
+    const cpX = cfg.bx + Math.sin(cfg.angle) * cfg.len * 0.5 + wobX * 0.4;
+    const cpY = cfg.by - Math.cos(cfg.angle) * cfg.len * 0.5 + wobY * 0.3;
+
+    ctx.beginPath();
+    ctx.moveTo(cfg.bx, cfg.by);
+    ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+    ctx.stroke();
+
+    // Tip ball
+    ctx.fillStyle = '#1a1a1a';
+    ctx.beginPath();
+    ctx.arc(endX, endY, 3, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawEyes(ctx, gazeX, gazeY, blinkL, blinkR) {
+  // Left eye (larger, rounder)
+  const lx = -35, ly = -20;
+  const lrx = 22, lry = 18;
+
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#1a1a1a';
+  ctx.fillStyle = '#ffffff';
+  wobblyEllipse(ctx, lx, ly, lrx, lry, 1.5, 300);
+  ctx.fill();
+  ctx.stroke();
+
+  // Left pupil
+  const lpx = lx + gazeX * 8;
+  const lpy = ly + gazeY * 5;
+  ctx.fillStyle = '#1a1a1a';
+  wobblyEllipse(ctx, lpx, lpy, 8, 9, 0.8, 301);
+  ctx.fill();
+
+  // Left highlight
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(lpx + 3, lpy - 3, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Left eyelid (blink)
+  if (blinkL > 0.05) {
+    ctx.fillStyle = '#f5f0e8';
+    ctx.beginPath();
+    ctx.ellipse(lx, ly - lry + lry * 2 * blinkL * 0.5, lrx + 2, lry * blinkL, 0, -Math.PI, 0);
+    ctx.fill();
+    ctx.strokeStyle = '#1a1a1a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(lx, ly, lrx, lry * (1 - blinkL * 0.8), 0, Math.PI + 0.2, -0.2);
+    ctx.stroke();
+  }
+
+  // Right eye (slightly smaller, more angular)
+  const rx = 35, ry = -18;
+  const rrx = 18, rry = 15;
+
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#1a1a1a';
+  ctx.fillStyle = '#ffffff';
+  wobblyEllipse(ctx, rx, ry, rrx, rry, 1.5, 310);
+  ctx.fill();
+  ctx.stroke();
+
+  // Right pupil
+  const rpx = rx + gazeX * 6;
+  const rpy = ry + gazeY * 4;
+  ctx.fillStyle = '#1a1a1a';
+  wobblyEllipse(ctx, rpx, rpy, 7, 8, 0.8, 311);
+  ctx.fill();
+
+  // Right highlight
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(rpx + 2, rpy - 2, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Right eyelid (blink)
+  if (blinkR > 0.05) {
+    ctx.fillStyle = '#f5f0e8';
+    ctx.beginPath();
+    ctx.ellipse(rx, ry - rry + rry * 2 * blinkR * 0.5, rrx + 2, rry * blinkR, 0, -Math.PI, 0);
+    ctx.fill();
+    ctx.strokeStyle = '#1a1a1a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(rx, ry, rrx, rry * (1 - blinkR * 0.8), 0, Math.PI + 0.2, -0.2);
+    ctx.stroke();
+  }
+}
+
+function drawBeak(ctx) {
+  // Triangular beak/nose on the right side of the face
+  const bx = 70, by = -5;
+
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#1a1a1a';
+  ctx.fillStyle = '#e8dcc8';
+
+  ctx.beginPath();
+  ctx.moveTo(bx - 10, by - 18);
+  ctx.lineTo(bx + 35, by + 2);
+  ctx.lineTo(bx - 10, by + 22);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Beak line
+  ctx.lineWidth = 1.5;
+  wobblyLine(ctx, bx - 8, by + 2, bx + 30, by + 2, 1, 350);
+}
+
+function drawMouth(ctx, openAmount) {
+  // Small mouth below the face center
+  const mx = 0, my = 35;
+
+  if (openAmount > 0.05) {
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#1a1a1a';
+    ctx.fillStyle = '#3a2020';
+
+    const w = 15 + openAmount * 10;
+    const h = 3 + openAmount * 14;
+    wobblyEllipse(ctx, mx, my, w, h, 1, 360);
+    ctx.fill();
+    ctx.stroke();
+
+    // Tongue hint when wide open
+    if (openAmount > 0.5) {
+      ctx.fillStyle = '#c46060';
+      ctx.beginPath();
+      ctx.ellipse(mx, my + h * 0.3, w * 0.5, h * 0.3, 0, 0, Math.PI);
+      ctx.fill();
+    }
+  } else {
+    // Closed mouth - small line
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#1a1a1a';
+    wobblyLine(ctx, mx - 12, my, mx + 12, my, 1, 361);
+  }
+}
+
+function drawLeftArm(ctx, sway) {
+  ctx.save();
+  ctx.rotate(0.15 + sway * 0.005);
+
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#1a1a1a';
+
+  // Upper arm
+  ctx.fillStyle = '#ddd8cf';
+  wobblyRect(ctx, -60, -12, 65, 24, 2, 400);
+  ctx.fill();
+  ctx.stroke();
+
+  // Elbow joint
+  ctx.fillStyle = '#c8c3ba';
+  ctx.beginPath();
+  ctx.arc(-62, 0, 12, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Forearm going down
+  ctx.save();
+  ctx.translate(-62, 0);
+  ctx.rotate(0.8 + sway * 0.008);
+
+  ctx.fillStyle = '#ddd8cf';
+  wobblyRect(ctx, -50, -10, 50, 20, 2, 410);
+  ctx.fill();
+  ctx.stroke();
+
+  // Hand / grip
+  ctx.fillStyle = '#c8c3ba';
+  wobblyRect(ctx, -58, -14, 16, 28, 1.5, 415);
+  ctx.fill();
+  ctx.stroke();
+
+  // Cloth/towel hanging
+  drawCloth(ctx, -50, 14, sway);
+
+  ctx.restore();
+  ctx.restore();
+}
+
+function drawCloth(ctx, x, y, sway) {
+  ctx.fillStyle = '#a8b8d0';
+  ctx.strokeStyle = '#1a1a1a';
+  ctx.lineWidth = 2;
+
+  const clothW = 35;
+  const clothH = 60;
+
+  ctx.beginPath();
+  ctx.moveTo(x - clothW / 2, y);
+  // Wavy left edge
+  ctx.quadraticCurveTo(
+    x - clothW / 2 - 8 + sway * 0.5,
+    y + clothH * 0.4,
+    x - clothW / 2 + 3 + sway * 0.3,
+    y + clothH
+  );
+  // Bottom edge
+  ctx.quadraticCurveTo(
+    x + sway * 0.2,
+    y + clothH + 8 + Math.sin(time * 2) * 3,
+    x + clothW / 2 - 3 + sway * 0.3,
+    y + clothH - 2
+  );
+  // Wavy right edge
+  ctx.quadraticCurveTo(
+    x + clothW / 2 + 5 + sway * 0.4,
+    y + clothH * 0.4,
+    x + clothW / 2,
+    y
+  );
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Fold lines
+  ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+  ctx.lineWidth = 1;
+  wobblyLine(ctx, x - 5, y + 5, x - 8 + sway * 0.2, y + clothH - 5, 1.5, 420);
+  wobblyLine(ctx, x + 8, y + 3, x + 5 + sway * 0.15, y + clothH - 8, 1.5, 421);
+}
+
+function drawRightArm(ctx, sway) {
+  ctx.save();
+  ctx.rotate(-0.3 + sway * 0.005);
+
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#1a1a1a';
+
+  // Upper arm
+  ctx.fillStyle = '#ddd8cf';
+  wobblyRect(ctx, -5, -12, 55, 24, 2, 500);
+  ctx.fill();
+  ctx.stroke();
+
+  // Elbow joint
+  ctx.fillStyle = '#c8c3ba';
+  ctx.beginPath();
+  ctx.arc(52, 0, 11, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Forearm going down-right
+  ctx.save();
+  ctx.translate(52, 0);
+  ctx.rotate(0.6 + sway * 0.006);
+
+  ctx.fillStyle = '#ddd8cf';
+  wobblyRect(ctx, 0, -10, 55, 20, 2, 510);
+  ctx.fill();
+  ctx.stroke();
+
+  // Claw hand
+  drawClaw(ctx, 55, 0, sway);
+
+  ctx.restore();
+  ctx.restore();
+}
+
+function drawClaw(ctx, x, y, sway) {
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#1a1a1a';
+  ctx.fillStyle = '#c8c3ba';
+
+  // Palm
+  ctx.beginPath();
+  ctx.arc(x, y, 12, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Three claw fingers
+  const fingers = [
+    { angle: -0.8 + sway * 0.003, len: 30 },
+    { angle: 0.0 + sway * 0.002,  len: 35 },
+    { angle: 0.8 + sway * 0.003,  len: 30 },
+  ];
+
+  fingers.forEach((f, i) => {
+    const fx = x + Math.cos(f.angle) * 12;
+    const fy = y + Math.sin(f.angle) * 12;
+    const ex = x + Math.cos(f.angle) * f.len;
+    const ey = y + Math.sin(f.angle) * f.len;
+
+    // Finger segment
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#1a1a1a';
+    wobblyLine(ctx, fx, fy, ex, ey, 1, 520 + i);
+
+    // Finger tip
+    ctx.lineWidth = 3;
+    const tipAngle = f.angle + 0.4;
+    const tipX = ex + Math.cos(tipAngle) * 12;
+    const tipY = ey + Math.sin(tipAngle) * 12;
+    wobblyLine(ctx, ex, ey, tipX, tipY, 0.8, 530 + i);
+  });
+}
+
+function drawLegs(ctx, bodyX, bodyY) {
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#1a1a1a';
+
+  // Left leg
+  ctx.save();
+  ctx.translate(bodyX - 40, bodyY + 85);
+
+  // Leg shaft
+  ctx.fillStyle = '#c8c3ba';
+  wobblyRect(ctx, -12, 0, 24, 50, 2, 600);
+  ctx.fill();
+  ctx.stroke();
+
+  // Boot
+  ctx.fillStyle = '#8a8580';
+  ctx.beginPath();
+  ctx.moveTo(-16, 45);
+  ctx.lineTo(-16, 70);
+  ctx.lineTo(-22, 75);
+  ctx.lineTo(-22, 82);
+  ctx.lineTo(22, 82);
+  ctx.lineTo(22, 75);
+  ctx.lineTo(18, 70);
+  ctx.lineTo(18, 45);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Boot detail line
+  ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+  ctx.lineWidth = 1;
+  wobblyLine(ctx, -15, 60, 17, 60, 1, 610);
+
+  ctx.restore();
+
+  // Right leg
+  ctx.save();
+  ctx.translate(bodyX + 40, bodyY + 85);
+
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#1a1a1a';
+
+  // Leg shaft
+  ctx.fillStyle = '#c8c3ba';
+  wobblyRect(ctx, -12, 0, 24, 50, 2, 620);
+  ctx.fill();
+  ctx.stroke();
+
+  // Boot
+  ctx.fillStyle = '#8a8580';
+  ctx.beginPath();
+  ctx.moveTo(-16, 45);
+  ctx.lineTo(-16, 70);
+  ctx.lineTo(-22, 75);
+  ctx.lineTo(-22, 82);
+  ctx.lineTo(22, 82);
+  ctx.lineTo(22, 75);
+  ctx.lineTo(18, 70);
+  ctx.lineTo(18, 45);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+  ctx.lineWidth = 1;
+  wobblyLine(ctx, -15, 60, 17, 60, 1, 630);
+
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════
+// FACE TRACKING (MediaPipe)
+// ═══════════════════════════════════════════════════════════
+let faceLandmarker = null;
+let trackingActive = false;
+
+async function initFaceTracking(videoEl) {
+  const statusEl = document.getElementById('status');
+  statusEl.textContent = 'Loading face tracking model...';
+
+  try {
+    const vision = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/vision_bundle.mjs');
+    const { FaceLandmarker, FilesetResolver } = vision;
+
+    const filesetResolver = await FilesetResolver.forVisionTasks(
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm'
+    );
+
+    faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
+      baseOptions: {
+        modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',
+        delegate: 'GPU'
+      },
+      outputFaceBlendshapes: true,
+      outputFacialTransformationMatrixes: true,
+      runningMode: 'VIDEO',
+      numFaces: 1
+    });
+
+    statusEl.textContent = 'Face tracking ready!';
+    setTimeout(() => { statusEl.textContent = ''; }, 2000);
+    return true;
+  } catch (e) {
+    console.error('Face tracking init failed:', e);
+    statusEl.textContent = 'Face tracking unavailable - use mic for audio reactivity';
+    return false;
+  }
+}
+
+async function startCamera(videoEl) {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: 640, height: 480, facingMode: 'user' }
+    });
+    videoEl.srcObject = stream;
+    await new Promise(resolve => { videoEl.onloadeddata = resolve; });
+    return true;
+  } catch (e) {
+    console.error('Camera access denied:', e);
+    document.getElementById('status').textContent = 'Camera access denied';
+    return false;
+  }
+}
+
+let lastVideoTime = -1;
+
+function processTracking(videoEl) {
+  if (!faceLandmarker || !trackingActive) return;
+  if (videoEl.readyState < 2) return;
+
+  const nowMs = performance.now();
+  if (videoEl.currentTime === lastVideoTime) return;
+  lastVideoTime = videoEl.currentTime;
+
+  try {
+    const results = faceLandmarker.detectForVideo(videoEl, nowMs);
+
+    if (results.faceBlendshapes && results.faceBlendshapes.length > 0) {
+      const bs = results.faceBlendshapes[0].categories;
+      const get = (name) => {
+        const c = bs.find(b => b.categoryName === name);
+        return c ? c.score : 0;
+      };
+
+      tracking.eyeBlinkL = get('eyeBlinkLeft');
+      tracking.eyeBlinkR = get('eyeBlinkRight');
+      tracking.mouthOpen = get('jawOpen');
+      tracking.browRaiseL = get('browOuterUpLeft');
+      tracking.browRaiseR = get('browOuterUpRight');
+
+      // Eye gaze from landmarks
+      tracking.eyeGazeX = (get('eyeLookOutLeft') - get('eyeLookInLeft') + get('eyeLookInRight') - get('eyeLookOutRight')) * 0.5;
+      tracking.eyeGazeY = (get('eyeLookDownLeft') + get('eyeLookDownRight') - get('eyeLookUpLeft') - get('eyeLookUpRight')) * 0.5;
+
+      tracking.active = true;
+    }
+
+    if (results.facialTransformationMatrixes && results.facialTransformationMatrixes.length > 0) {
+      const mat = results.facialTransformationMatrixes[0].data;
+      // Extract rotation from the 4x4 transformation matrix
+      // mat is a Float32Array of 16 elements (column-major)
+      tracking.headYaw = Math.asin(-mat[8]) / (Math.PI / 4);        // Rotation around Y
+      tracking.headPitch = Math.atan2(mat[9], mat[10]) / (Math.PI / 4); // Rotation around X
+      tracking.headRoll = Math.atan2(mat[4], mat[0]) / (Math.PI / 4);   // Rotation around Z
+    }
+  } catch (e) {
+    // Silently handle tracking errors
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAIN APPLICATION
+// ═══════════════════════════════════════════════════════════
+const canvas = document.getElementById('canvas');
+const ctx2d = canvas.getContext('2d');
+const videoEl = document.getElementById('webcam');
+
+function resize() {
+  canvas.width = window.innerWidth * devicePixelRatio;
+  canvas.height = window.innerHeight * devicePixelRatio;
+  ctx2d.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Main render loop
+function frame() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  // Clear
+  ctx2d.clearRect(0, 0, w, h);
+
+  // Process face tracking
+  processTracking(videoEl);
+
+  // Audio reactivity for mouth (additive with face tracking)
+  if (micActive && !tracking.active) {
+    const level = getAudioLevel();
+    tracking.mouthOpen = level;
+  } else if (micActive && tracking.active) {
+    // Blend audio with tracking for emphasis
+    const level = getAudioLevel();
+    tracking.mouthOpen = Math.max(tracking.mouthOpen, level * 0.5);
+  }
+
+  // Smooth tracking values
+  updateSmoothing();
+
+  // Character positioning and scale
+  const baseScale = Math.min(w / 600, h / 700) * CONFIG.characterScale;
+  const cx = w / 2;
+  const cy = h * 0.48;
+
+  drawCharacter(ctx2d, cx, cy, baseScale);
+
+  requestAnimationFrame(frame);
+}
+
+requestAnimationFrame(frame);
+
+// ═══════════════════════════════════════════════════════════
+// UI CONTROLS
+// ═══════════════════════════════════════════════════════════
+const btnTrack = document.getElementById('btn-track');
+const btnMic = document.getElementById('btn-mic');
+const btnGreen = document.getElementById('btn-green');
+const btnTransparent = document.getElementById('btn-transparent');
+const btnPreview = document.getElementById('btn-preview');
+const btnSettings = document.getElementById('btn-settings');
+const sensitivityPanel = document.getElementById('sensitivity-panel');
+
+btnTrack.addEventListener('click', async () => {
+  if (trackingActive) {
+    trackingActive = false;
+    tracking.active = false;
+    btnTrack.textContent = 'Start Tracking';
+    btnTrack.classList.remove('active');
+    return;
+  }
+  btnTrack.textContent = 'Loading...';
+  const camOk = await startCamera(videoEl);
+  if (!camOk) { btnTrack.textContent = 'Start Tracking'; return; }
+  const trackOk = await initFaceTracking(videoEl);
+  if (trackOk) {
+    trackingActive = true;
+    btnTrack.textContent = 'Stop Tracking';
+    btnTrack.classList.add('active');
+  } else {
+    btnTrack.textContent = 'Start Tracking';
+  }
+});
+
+btnMic.addEventListener('click', async () => {
+  if (micActive) {
+    micActive = false;
+    btnMic.textContent = 'Enable Mic';
+    btnMic.classList.remove('active');
+    return;
+  }
+  const ok = await startMic();
+  if (ok) {
+    btnMic.textContent = 'Disable Mic';
+    btnMic.classList.add('active');
+  }
+});
+
+btnGreen.addEventListener('click', () => {
+  document.body.classList.toggle('greenscreen');
+  document.body.classList.remove('transparent');
+  btnGreen.classList.toggle('active');
+  btnTransparent.classList.remove('active');
+});
+
+btnTransparent.addEventListener('click', () => {
+  document.body.classList.toggle('transparent');
+  document.body.classList.remove('greenscreen');
+  btnTransparent.classList.toggle('active');
+  btnGreen.classList.remove('active');
+});
+
+btnPreview.addEventListener('click', () => {
+  videoEl.classList.toggle('visible');
+  btnPreview.classList.toggle('active');
+});
+
+btnSettings.addEventListener('click', () => {
+  sensitivityPanel.classList.toggle('visible');
+  btnSettings.classList.toggle('active');
+});
+
+// Sensitivity sliders
+['head', 'eye', 'mouth', 'idle'].forEach(key => {
+  const slider = document.getElementById(`sense-${key}`);
+  const display = document.getElementById(`val-${key}`);
+  slider.addEventListener('input', () => {
+    const val = parseFloat(slider.value);
+    display.textContent = val.toFixed(1);
+    if (key === 'head') CONFIG.headSensitivity = val;
+    if (key === 'eye') CONFIG.eyeSensitivity = val;
+    if (key === 'mouth') CONFIG.mouthSensitivity = val;
+    if (key === 'idle') CONFIG.idleSpeed = val;
+  });
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'g') btnGreen.click();
+  if (e.key === 't') btnTransparent.click();
+  if (e.key === 'w') btnPreview.click();
+  if (e.key === 's') btnSettings.click();
+});
+
+</script>
+</body>
+</html>
