@@ -42,8 +42,11 @@ jobs:
         with:
             python-version: '3.13' 
 
+      - run: |
+            ls
+            pwd
       - name: Run the script
-        run: python test.py
+        run: python ../test.py
 
       - name: Identify Folders
         run: ls 
