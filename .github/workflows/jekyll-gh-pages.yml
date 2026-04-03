@@ -46,7 +46,7 @@ jobs:
             ls
             pwd
       - name: Run the script
-        run: python ../test.py
+        run: python test.py
 
       - name: Identify Folders
         run: ls 
