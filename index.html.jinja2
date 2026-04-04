@@ -36,10 +36,10 @@ Heavily inspired by https://jinja.palletsprojects.com/en/stable/templates/ .#}
 								<li><a href="index.html">Home</a></li>
 								<li><a href="aboutme.html">About Me</a></li>
 								<li><a href="education.html">Education</a></li>
-								{# This should be provided with a dictionary of the folders and their displayed nams #}
+								{# This should be provided with a list of the folders and their displayed names -#}
 								{% for item in navigation -%}
         						<li><a href="{{ item.href }}">{{ item.caption }}</a></li>
-    							{%- endfor %}
+    							{% endfor %}
 								<!--<li><a href ="Cookies/">Cookies!</a></li>-->
 								<li><a href="elements.html">Elements</a></li>
 							</ul>
