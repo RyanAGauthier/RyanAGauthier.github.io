@@ -53,7 +53,7 @@ jobs:
 
       - name: Place Flag
       #- name: Fix index menu & resume
-        run: sed -i 's/<!-- Page Wrapper -->/<!-- PAGE WRAPPER -->' index.html
+        run: sed -i 's/<!-- Page Wrapper -->/<!-- PAGE WRAPPER -->/g' index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
