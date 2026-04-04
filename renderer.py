@@ -26,8 +26,10 @@ for ele in listdir():
         myList.append(folder)
     elif path.isfile(currentPath) and "Resume" in ele:
         out = re.findall("[0-9]?[0-9]_[0-9]?[0-9]_[0-9]?[0-9]", ele)
-        if parser.parse(out[0], fuzzy=True) > latestResumeDate:
+        currentResumeDate = parser.parse(out[0], fuzzy=True)
+        if  currentResumeDate > latestResumeDate:
             resume = ele
+            latestResumeDate = currentResumeDate
 template = env.get_template("index.html.jinja2")
 outfile = template.render(navigation = myList, latest_resume = resume)
 with open("index.html", "w") as fh:
