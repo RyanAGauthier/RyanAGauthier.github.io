@@ -19,8 +19,9 @@ myList = []
 for ele in listdir():
     currentPath = path.join(".", ele)
     if path.isdir(currentPath) and ele[0] != ".":
-        folder = myFolder(ele,ele)
-        myList.append(folder)
+        if "index.html" in listdir(currentPath):
+            folder = myFolder(ele,ele)
+            myList.append(folder)
     elif path.isfile(currentPath) and "Resume" in ele:
         out = re.findall("[0-9]?[0-9]_[0-9]?[0-9]_[0-9]?[0-9]", ele)
         currentResumeDate = parser.parse(out[0], fuzzy=True)
