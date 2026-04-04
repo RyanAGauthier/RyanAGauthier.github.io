@@ -2,9 +2,10 @@ from os import listdir, path
 from jinja2 import Environment, select_autoescape, FileSystemLoader
 from dateutil import parser
 from datetime import datetime, timedelta
+import re
 
 env = Environment(
-    loader=FileSystemLoader(),
+    loader=FileSystemLoader("."),
     autoescape=select_autoescape()
 )
 class myFolder:
@@ -24,7 +25,8 @@ for ele in listdir():
         folder = myFolder(ele,ele)
         myList.append(folder)
     elif path.isfile(currentPath) and "Resume" in ele:
-        if parser.parse(ele) > latestResumeDate:
+        out = re.search("[0-9]?[0-9]_[0-9]?[0-9]_[0-9]?[0-9]", ele)
+        if parser.parse(out[0]) > latestResumeDate:
             resume = ele
 template = env.get_template("index.html.jinja2")
 outfile = template.render(navigation = myList, latest_resume = resume)
