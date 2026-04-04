@@ -21,12 +21,12 @@ myList = []
 # Load all the filenames, then identify the most recent resume...
 for ele in listdir():
     currentPath = path.join(".", ele)
-    if path.isdir(currentPath):
+    if path.isdir(currentPath) and ele[0] is not ".":
         folder = myFolder(ele,ele)
         myList.append(folder)
     elif path.isfile(currentPath) and "Resume" in ele:
-        out = re.search("[0-9]?[0-9]_[0-9]?[0-9]_[0-9]?[0-9]", ele)
-        if parser.parse(out[0]) > latestResumeDate:
+        out = re.findall("[0-9]?[0-9]_[0-9]?[0-9]_[0-9]?[0-9]", ele)
+        if parser.parse(out[0], fuzzy=True) > latestResumeDate:
             resume = ele
 template = env.get_template("index.html.jinja2")
 outfile = template.render(navigation = myList, latest_resume = resume)
