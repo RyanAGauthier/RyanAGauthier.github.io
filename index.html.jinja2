@@ -39,7 +39,7 @@ Heavily inspired by https://jinja.palletsprojects.com/en/stable/templates/ .#}
 								{# This should be provided with a list of the folders and their displayed names -#}
 								{% for item in navigation -%}
         						<li><a href="{{ item.href }}">{{ item.caption }}</a></li>
-    							{% endfor %}
+    							{% endfor -%}
 								<!--<li><a href ="Cookies/">Cookies!</a></li>-->
 								<li><a href="elements.html">Elements</a></li>
 							</ul>
