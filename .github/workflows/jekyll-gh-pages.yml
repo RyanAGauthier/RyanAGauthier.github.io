@@ -51,8 +51,9 @@ jobs:
       - name: Identify Folders
         run: ls 
 
-      - name: Fix index menu & resume
-        run: echo "Testing!"
+      - name: Place Flag
+      #- name: Fix index menu & resume
+        run: sed -i 's/<!-- Page Wrapper -->/<!-- PAGE WRAPPER -->' index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
