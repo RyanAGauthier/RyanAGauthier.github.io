@@ -16,9 +16,6 @@ class myFolder:
 resume = ""
 latestResumeDate = datetime.min
 myList = []
-# {% for item in navigation %}
-#         						<li><a href="{{ item.href }}">{{ item.caption }}</a></li>
-# Load all the filenames, then identify the most recent resume...
 for ele in listdir():
     currentPath = path.join(".", ele)
     if path.isdir(currentPath) and ele[0] != ".":
@@ -26,11 +23,11 @@ for ele in listdir():
         myList.append(folder)
     elif path.isfile(currentPath) and "Resume" in ele:
         out = re.findall("[0-9]?[0-9]_[0-9]?[0-9]_[0-9]?[0-9]", ele)
-        if parser.parse(out[0], fuzzy=True) > latestResumeDate:
+        currentResumeDate = parser.parse(out[0], fuzzy=True)
+        if  currentResumeDate > latestResumeDate:
             resume = ele
+            latestResumeDate = currentResumeDate
 template = env.get_template("index.html.jinja2")
 outfile = template.render(navigation = myList, latest_resume = resume)
 with open("index.html", "w") as fh:
     fh.write(outfile)
-# print("Hello, World!")
-# print(listdir())
