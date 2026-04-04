@@ -21,7 +21,7 @@ myList = []
 # Load all the filenames, then identify the most recent resume...
 for ele in listdir():
     currentPath = path.join(".", ele)
-    if path.isdir(currentPath) and ele[0] is not ".":
+    if path.isdir(currentPath) and ele[0] != ".":
         folder = myFolder(ele,ele)
         myList.append(folder)
     elif path.isfile(currentPath) and "Resume" in ele:
