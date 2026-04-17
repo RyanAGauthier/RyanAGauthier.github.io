@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<head>
+    <title>Counter Test!</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
+    <style>
+        .spiffybox{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100vh;
+            padding: 0px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 0px;
+            margin: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div class="spiffybox">
+        <h1 class="center" margin-bottom="0px">Counter: <span id="counterSpan">NaN</span></h1>
+        <button type="button" onclick="incrCount()">Increment the counter!</button>
+    </div>
+</body>
+<script>
+
+    //Helper function to toggle classes
+    function wow(el, i, para1, para2){
+    if(el.classList.contains(para1) || el.classList.contains(para2))
+        {
+            el.classList.toggle(para1);
+            el.classList.toggle(para2);
+        };
+    };
+
+    //Get the current count
+    //Returns the count as an int that will be inserted into some innerText
+    async function getCount(){
+        //Using MDN pattern:
+        const url = "https://robotsbyryan.com/api/counter";
+        try{
+            resp = await fetch(url);
+            if (!resp.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+            const result = await resp.json();
+            console.log(result);
+            if (result.success == true)
+                console.log("Counter returned!");
+            console.log(result.results[0].count);
+            return result.results[0].count;
+        }catch (e){
+            console.log(e);
+            alert("Counter didn't return!");
+            return "FAILED";
+        }
+                    // console.log(result.results[0].count);
+            //Schema: {
+                //   "success": true,
+                //   "meta": {
+                //     "served_by": "v3-prod",
+                //     "served_by_region": "WNAM",
+                //     "served_by_colo": "LAX",
+                //     "served_by_primary": true,
+                //     "timings": {
+                //       "sql_duration_ms": 0.2149
+                //     },
+                //     "duration": 0.2149,
+                //     "changes": 0,
+                //     "last_row_id": 0,
+                //     "changed_db": false,
+                //     "size_after": 16384,
+                //     "rows_read": 1,
+                //     "rows_written": 0,
+                //     "total_attempts": 1
+                //   },
+                //   "results": [
+                //     {
+                //       "count": 9
+                //     }
+                //   ]
+                // }
+    }
+
+    async function incrCount(){
+        //window.location.href
+        //Using MDN pattern:
+        const url = "https://robotsbyryan.com/api/increment";
+        try{
+            resp = await fetch(url, {method: "POST"});
+            if (!resp.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+            const result = await resp.json();
+            console.log(result);
+            if (result.success == true)
+                console.log("Increment succeeded!");
+        }catch (e){
+            console.log(e);
+            alert("Increment failed!");
+        }
+    }
+          //As soon as the window loads, time to hook in a bunch of listeners and set some display values. 
+          //Some of the element setting stuf can probably be pure css considering .nav is defined somewhere
+          window.onload=function(){
+            let calenderp = document.getElementById('counterSpan');
+            calenderp.innerText = getCount().toString()
+            // setInterval(()=>{calenderp.innerText = getCount();},1000);
+          }
+</script>
+</html>
