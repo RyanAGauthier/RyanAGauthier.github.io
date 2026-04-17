@@ -101,6 +101,10 @@
             console.log(result);
             if (result.success == true)
                 console.log("Increment succeeded!");
+                target = document.getElementById('counterSpan');
+                currentCount = parseInt(target.innerText);
+                currentCount += 1;
+                target.innerText = currentCount.toString();
         }catch (e){
             console.log(e);
             alert("Increment failed!");
@@ -110,7 +114,7 @@
           //Some of the element setting stuf can probably be pure css considering .nav is defined somewhere
           window.onload=function(){
             let calenderp = document.getElementById('counterSpan');
-            console.log("About to call getcount!")
+            console.log("About to call getcount!");
             setTimeout(getCount(), 5000, calenderp);
             // setInterval(()=>{calenderp.innerText = getCount();},1000);
           }
