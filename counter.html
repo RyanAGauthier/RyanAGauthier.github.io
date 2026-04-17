@@ -22,6 +22,7 @@
     <div class="spiffybox">
         <h1 class="center" margin-bottom="0px">Counter: <span id="counterSpan">NaN</span></h1>
         <button type="button" onclick="incrCount()">Increment the counter!</button>
+        <button type="button" onclick="getCount(document.getElementById('counterSpan'))">Update the counter!</button>
     </div>
 </body>
 <script>
@@ -109,7 +110,8 @@
           //Some of the element setting stuf can probably be pure css considering .nav is defined somewhere
           window.onload=function(){
             let calenderp = document.getElementById('counterSpan');
-            setTimeout(getCount(calenderp), 5000);
+            console.log("About to call getcount!")
+            setTimeout(getCount(), 5000, calenderp);
             // setInterval(()=>{calenderp.innerText = getCount();},1000);
           }
 </script>
