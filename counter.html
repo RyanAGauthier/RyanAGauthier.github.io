@@ -37,7 +37,7 @@
 
     //Get the current count
     //Returns the count as an int that will be inserted into some innerText
-    async function getCount(){
+    async function getCount(a = null){
         //Using MDN pattern:
         const url = "https://robotsbyryan.com/api/counter";
         try{
@@ -50,6 +50,9 @@
             if (result.success == true)
                 console.log("Counter returned!");
             console.log(result.results[0].count);
+            if(a != null){
+                a.innerText = result.results[0].count.toString()
+            }
             return result.results[0].count;
         }catch (e){
             console.log(e);
@@ -106,7 +109,7 @@
           //Some of the element setting stuf can probably be pure css considering .nav is defined somewhere
           window.onload=function(){
             let calenderp = document.getElementById('counterSpan');
-            calenderp.innerText = getCount().toString()
+            setTimeout(getCount(calenderp), 5000);
             // setInterval(()=>{calenderp.innerText = getCount();},1000);
           }
 </script>
