@@ -18,7 +18,7 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
     let encoder = new TextEncoder();
     const timestamp = encoder.encode(temp_timestamp);
     console.log(`TS: ${timestamp}`);
-    const temp_body = await context.request.body;
+    const temp_body = await context.request.text();
     console.log(`Temp body: ${temp_body}`);
     const body = encoder.encode(temp_body);
     console.log(`Body: ${body}`)
