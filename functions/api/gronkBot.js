@@ -3,7 +3,7 @@ export async function onRequestPost(context) {
 if (context.request.headers.has("X-Signature-Ed25519") && context.request.headers.has("X-Signature-Timestamp")){
     console.log("Had headers!");
     const temp_PUBLIC_KEY = context.env.D_PUBKEY;
-    console.log("Public key: ${temp_PUBLIC_KEY}");
+    console.log(`Public key: ${temp_PUBLIC_KEY}`);
     //Step 1: Convert the raw public key to a CryptoKey, https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey
     const PUBLIC_KEY = await crypto.subtle.importKey('raw', Uint8Array.fromHex(temp_PUBLIC_KEY),
 						{
