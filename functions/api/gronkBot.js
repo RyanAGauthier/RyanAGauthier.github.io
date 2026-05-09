@@ -19,12 +19,15 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
     const timestamp = encoder.encode(temp_timestamp);
     console.log(`TS: ${timestamp}`);
     const temp_body = context.request.body;
-    console.log(`Temp body: ${temp_body}`);
+    for (ele of temp_body){
+        console.log(`Temp body: ${ele}`);
+    }
     const body = encoder.encode(temp_body);
     //Weird that I can set a const, but that's JS
     const data = new Uint8Array(timestamp.length + body.length);
     data.set(timestamp);
     data.set(body, timestamp.length);
+    console.log(`Temp data: ${data}`);
     //Step 3: Call crypto.subtle.verify
     let isVerified = await crypto.subtle.verify({ "name": "Ed25519" },PUBLIC_KEY,signature,data);
     if (!isVerified) {
