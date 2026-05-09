@@ -37,7 +37,7 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
         console.log("Valid signature!!!!!");
         //Step 4: Actually handle a given request
         //Check type
-        const checkType = await context.request.json();
+        const checkType = JSON.parse(temp_body);
         if ("type" in checkType){
             if(checkType["type"] == 1){
                 //It's just a ping, return pong
