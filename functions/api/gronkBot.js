@@ -3,6 +3,7 @@ export async function onRequestPost(context) {
 if (context.request.headers.has("X-Signature-Ed25519") && context.request.headers.has("X-Signature-Timestamp")){
     console.log("Had headers!");
     const temp_PUBLIC_KEY = context.env.D_PUBKEY;
+    console.log("Public key: ${temp_PUBLIC_KEY}");
     //Step 1: Convert the raw public key to a CryptoKey, https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey
     const PUBLIC_KEY = await crypto.subtle.importKey('raw', Uint8Array.fromHex(temp_PUBLIC_KEY),
 						{
@@ -10,6 +11,7 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
 						}, false,['verify']);
     //Step 2: Make everything into TypedArrays that can be fed into subtleCrypto.verify
     const temp_signature = context.request.headers.get("X-Signature-Ed25519");
+    console.log("About to try signature...");
     const signature = Uint8Array.fromHex(temp_signature);
     const temp_timestamp = context.request.headers.get("X-Signature-Timestamp");
     const timestamp = TextEncoder.encode(temp_timestamp);
