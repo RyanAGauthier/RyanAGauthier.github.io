@@ -19,10 +19,9 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
     const timestamp = encoder.encode(temp_timestamp);
     console.log(`TS: ${timestamp}`);
     const temp_body = context.request.body;
-    for (ele of temp_body){
-        console.log(`Temp body: ${ele}`);
-    }
+    console.log(`Temp body: ${temp_body}`);
     const body = encoder.encode(temp_body);
+    console.log(`Body: ${body}`)
     //Weird that I can set a const, but that's JS
     const data = new Uint8Array(timestamp.length + body.length);
     data.set(timestamp);
