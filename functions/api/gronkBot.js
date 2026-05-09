@@ -28,12 +28,13 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
     data.set(body, timestamp.length);
     console.log(`Temp data: ${data}`);
     //Step 3: Call crypto.subtle.verify
-    let isVerified = await crypto.subtle.verify({ "name": "Ed25519" },PUBLIC_KEY,signature,data);
+    let isVerified = await crypto.subtle.verify({ "name": "Ed25519",},PUBLIC_KEY,signature,data);
     if (!isVerified) {
         console.log("Invalid request signature or crypto failed...");
         console.log(isVerified);
         return new Response("Invalid request signature!",{status: 401});
     }else{
+        console.log("Valid signature!!!!!");
         //Step 4: Actually handle a given request
         //Check type
         const checkType = await context.request.json();
