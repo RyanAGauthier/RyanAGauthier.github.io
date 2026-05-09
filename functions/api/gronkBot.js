@@ -14,9 +14,10 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
     console.log("About to try signature...");
     const signature = Uint8Array.fromHex(temp_signature);
     const temp_timestamp = context.request.headers.get("X-Signature-Timestamp");
-    const timestamp = TextEncoder.encode(temp_timestamp);
+    let encoder = new TextEncoder();
+    const timestamp = encoder.encode(temp_timestamp);
     const temp_body = context.request.body;
-    const body = TextEncoder.encode(temp_body);
+    const body = encoder.encode(temp_body);
     //Weird that I can set a const, but that's JS
     const data = new Uint8Array(timestamp.length + body.length);
     data.set(timestamp);
