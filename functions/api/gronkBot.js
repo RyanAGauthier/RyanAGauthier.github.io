@@ -41,10 +41,14 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
                     console.log("gronk is this trued????");
                     let options = checkType["data"]["options"][0]["value"];
                     console.log(`Options: ${options}`);
-                    const response = await context.env.LLM.run("@cf/google/gemma-4-26b-a4b-it", {
+                    //let currentmodel = "@cf/google/gemma-4-26b-a4b-it";
+                    let currentmodel = "@cf/meta/llama-3.1-8b-instruct";
+                    const response = await context.env.LLM.run(currentmodel, {
                         prompt: options,
                     });
-                    return Response.json({type: 4, data: {content: (`Prompt: ${options}, `.concat(JSON.stringify(response)))}});
+                    let output = JSON.stringify(response);
+                    console.log(`Output: ${output}`);
+                    return Response.json({type: 4, data: {content: (`Prompt: ${options}\n`.concat(output))}});
                 }
                 return Response.json({type: 4, data: {content: "Hello, I'm Gronk. I'm a work in progress!"}});
             }
