@@ -29,6 +29,7 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
         //Step 4: Actually handle a given request
         //Check type
         const checkType = JSON.parse(temp_body);
+        console.log(checkType);
         if ("type" in checkType){
             if(checkType["type"] == 1){
                 //It's just a ping, return pong
@@ -38,7 +39,8 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
                 // It's a valid interaction, do something
                 if (checkType["data"]["name"] == "gronkisthistrue"){
                     console.log("gronk is this trued????");
-                    options = checkType["data"]["options"]["value"];
+                    options = "What is true?";
+                    // options = checkType["data"]["options"]["value"];
                     console.log(`Options: ${options}`);
                     const response = await env.LLM.run("@cf/google/gemma-4-26b-a4b-it", {
                         prompt: options,
