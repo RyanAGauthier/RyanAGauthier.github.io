@@ -1,37 +1,28 @@
 export async function onRequestPost(context) {
 //Step 0: Check if request has required authentication
 if (context.request.headers.has("X-Signature-Ed25519") && context.request.headers.has("X-Signature-Timestamp")){
-    console.log("Had headers!");
     const temp_PUBLIC_KEY = context.env.D_PUBKEY;
     //Step 1: Convert the raw public key to a CryptoKey, https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey
     const PUBLIC_KEY = await crypto.subtle.importKey('raw', Uint8Array.fromHex(temp_PUBLIC_KEY),
 						{
 							name: 'Ed25519',
 						}, false,['verify']);
-    console.log(`PUBLIC: ${PUBLIC_KEY}`);
     //Step 2: Make everything into TypedArrays that can be fed into subtleCrypto.verify
     const temp_signature = context.request.headers.get("X-Signature-Ed25519");
-    console.log("About to try signature...");
     const signature = Uint8Array.fromHex(temp_signature);
-    console.log(`sig: ${signature}`);
     const temp_timestamp = context.request.headers.get("X-Signature-Timestamp");
     let encoder = new TextEncoder();
     const timestamp = encoder.encode(temp_timestamp);
-    console.log(`TS: ${timestamp}`);
     const temp_body = await context.request.text();
-    console.log(`Temp body: ${temp_body}`);
     const body = encoder.encode(temp_body);
-    console.log(`Body: ${body}`)
     //Weird that I can set a const, but that's JS
     const data = new Uint8Array(timestamp.length + body.length);
     data.set(timestamp);
     data.set(body, timestamp.length);
-    console.log(`Temp data: ${data}`);
     //Step 3: Call crypto.subtle.verify
     let isVerified = await crypto.subtle.verify({ "name": "Ed25519",},PUBLIC_KEY,signature,data);
     if (!isVerified) {
         console.log("Invalid request signature or crypto failed...");
-        console.log(isVerified);
         return new Response("Invalid request signature!",{status: 401});
     }else{
         console.log("Valid signature!!!!!");
@@ -44,7 +35,16 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
                     return Response.json({"type": 1});
             }
             else if(checkType["type"] == 2){
-                //It's a valid interaction, do something
+                // It's a valid interaction, do something
+                if (checkType["data"]["name"] == "gronkisthistrue"){
+                    console.log("gronk is this trued????");
+                    options = checkType["data"]["options"]["value"];
+                    console.log(`Options: ${options}`);
+                    const response = await env.LLM.run("@cf/google/gemma-4-26b-a4b-it", {
+                        prompt: options,
+                    });
+                    return new Response(JSON.stringify(response));
+                }
                 return Response.json({type: 4, data: {content: "Hello, I'm Gronk. I'm a work in progress!"}});
             }
             else{
