@@ -29,7 +29,7 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
         //Step 4: Actually handle a given request
         //Check type
         const checkType = JSON.parse(temp_body);
-        console.log(checkType);
+        // console.log(checkType);
         if ("type" in checkType){
             if(checkType["type"] == 1){
                 //It's just a ping, return pong
@@ -48,7 +48,7 @@ if (context.request.headers.has("X-Signature-Ed25519") && context.request.header
                     });
                     let output = JSON.stringify(response);
                     console.log(`Output: ${output}`);
-                    return Response.json({type: 4, data: {content: (`Prompt: ${options}\n`.concat(output))}});
+                    return Response.json({type: 4, data: {content: (`Prompt: ${options}\nResponse: `.concat(response["response"]))}});
                 }
                 return Response.json({type: 4, data: {content: "Hello, I'm Gronk. I'm a work in progress!"}});
             }
